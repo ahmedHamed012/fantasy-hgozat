@@ -110,8 +110,30 @@ export const en: Record<string, string> = {
   'live.decrease': 'Decrease',
   'live.increase': 'Increase',
   'live.finish': 'Finish match',
-  'live.finish.soon': 'Finishing arrives in the next phase.',
+  'live.finish.confirm': 'Finish the match? Stats become final and points, MOTM and rankings are calculated.',
   'live.offline': 'Update failed — check connection and retry.',
+
+  // Cancel
+  'match.cancel': 'Cancel match',
+  'match.cancel.confirm': 'Cancel this match? It will not count towards any statistics.',
+
+  // Result
+  'result.title': 'Match result',
+  'result.view': 'View result',
+  'result.finalScore': 'Final score',
+  'result.motm': 'Man of the Match',
+  'result.motm.joint': 'Joint Man of the Match',
+  'result.col.player': 'Player',
+  'result.col.goals': 'G',
+  'result.col.assists': 'A',
+  'result.col.saves': 'Sv',
+  'result.col.og': 'OG',
+  'result.col.points': 'Pts',
+  'result.col.goals.full': 'Goals',
+  'result.col.assists.full': 'Assists',
+  'result.col.saves.full': 'Saves',
+  'result.newAchievements': 'New achievements',
+  'result.backToMatches': 'All matches',
 
   // Players
   'player.list.title': 'Players',

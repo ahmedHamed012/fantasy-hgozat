@@ -1,0 +1,60 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+mixin resultTable(team, roster)
+  .card.result-team
+    h3.result-team__title= team.name
+    .table-wrap
+      table.table.result-table
+        thead
+          tr
+            th= t('result.col.player')
+            th.num(title=t('result.col.goals.full'))= t('result.col.goals')
+            th.num(title=t('result.col.assists.full'))= t('result.col.assists')
+            th.num(title=t('result.col.saves.full'))= t('result.col.saves')
+            th.num OG
+            th.num= t('result.col.points')
+        tbody
+          each p in roster
+            tr(class=(p.isMotm ? 'is-motm' : ''))
+              td
+                .player-cell
+                  +avatar(p.player, 'sm')
+                  span.player-cell__name
+                    = p.player.name
+                    if p.isMotm
+                      |  🏆
+              td.num= p.goals
+              td.num= p.assists
+              td.num= p.saves
+              td.num= p.ownGoals
+              td.num.result-points= p.points
+
+block content
+  .page-head
+    div
+      h1.page-head__title= match.title || t('result.title')
+      p.muted
+        = formatDate(match.matchDate) + ' · '
+        +statusBadge(match.status)
+    a.btn.btn--ghost.btn--sm(href="/admin/matches")= t('result.backToMatches')
+
+  .scoreboard.scoreboard--final
+    .scoreboard__team.scoreboard__team--a
+      span.scoreboard__name= teamA.name
+      span.scoreboard__score= scoreA
+    span.scoreboard__vs –
+    .scoreboard__team.scoreboard__team--b
+      span.scoreboard__name= teamB.name
+      span.scoreboard__score= scoreB
+
+  if motm.length
+    .motm-banner
+      span.motm-banner__trophy 🏆
+      div
+        .motm-banner__label= motm.length > 1 ? t('result.motm.joint') : t('result.motm')
+        .motm-banner__names= motm.map(function(p){ return p.player.name }).join(' · ')
+
+  .result-tables
+    +resultTable(teamA, rosterA)
+    +resultTable(teamB, rosterB)

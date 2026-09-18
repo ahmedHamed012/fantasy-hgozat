@@ -47,8 +47,12 @@ block content
         +playerCard(part)
 
   .live-actions
-    button.btn.btn--primary.btn--block.btn--finish(type="button", disabled, title=t('live.finish.soon'))= t('live.finish')
-    p.muted.text-center= t('live.finish.soon')
+    form(method="post", action=`/admin/matches/${match.id}/finish`, onsubmit=`return confirm(${JSON.stringify(t('live.finish.confirm'))})`)
+      +csrf
+      button.btn.btn--primary.btn--block.btn--finish(type="submit")= t('live.finish')
+    form.live-cancel(method="post", action=`/admin/matches/${match.id}/cancel`, onsubmit=`return confirm(${JSON.stringify(t('match.cancel.confirm'))})`)
+      +csrf
+      button.btn.btn--danger.btn--sm(type="submit")= t('match.cancel')
 
 block scripts
   script(src="/static/js/live-match.js", defer)

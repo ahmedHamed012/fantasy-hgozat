@@ -106,8 +106,30 @@ export const ar: Record<string, string> = {
   'live.decrease': 'إنقاص',
   'live.increase': 'زيادة',
   'live.finish': 'إنهاء المباراة',
-  'live.finish.soon': 'الإنهاء سيصل في المرحلة التالية.',
+  'live.finish.confirm': 'إنهاء المباراة؟ ستصبح الإحصائيات نهائية وتُحتسب النقاط وأفضل لاعب والترتيب.',
   'live.offline': 'فشل التحديث — تحقّق من الاتصال وأعد المحاولة.',
+
+  // Cancel
+  'match.cancel': 'إلغاء المباراة',
+  'match.cancel.confirm': 'إلغاء هذه المباراة؟ لن تُحتسب في أي إحصائيات.',
+
+  // Result
+  'result.title': 'نتيجة المباراة',
+  'result.view': 'عرض النتيجة',
+  'result.finalScore': 'النتيجة النهائية',
+  'result.motm': 'أفضل لاعب في المباراة',
+  'result.motm.joint': 'أفضل لاعب (مشترك)',
+  'result.col.player': 'اللاعب',
+  'result.col.goals': 'هـ',
+  'result.col.assists': 'ت',
+  'result.col.saves': 'تص',
+  'result.col.og': 'ع',
+  'result.col.points': 'نقاط',
+  'result.col.goals.full': 'الأهداف',
+  'result.col.assists.full': 'التمريرات الحاسمة',
+  'result.col.saves.full': 'التصديات',
+  'result.newAchievements': 'إنجازات جديدة',
+  'result.backToMatches': 'كل المباريات',
 
   // Players
   'player.list.title': 'اللاعبون',

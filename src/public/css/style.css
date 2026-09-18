@@ -521,6 +521,32 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
   .scoreboard__score { font-size: 2rem; }
 }
 
+/* ---- Match result ------------------------------------------------------- */
+.scoreboard--final { position: static; top: auto; }
+.motm-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(245, 197, 24, 0.18), rgba(245, 197, 24, 0.06));
+  border: 1px solid rgba(245, 197, 24, 0.5);
+}
+.motm-banner__trophy { font-size: 2rem; }
+.motm-banner__label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gold); font-weight: 700; }
+.motm-banner__names { font-size: 1.2rem; font-weight: 800; }
+
+.result-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.result-team__title { font-size: 1.1rem; margin-bottom: 12px; }
+.result-table th.num, .result-table td.num { width: 1%; padding-inline: 8px; }
+.result-points { font-weight: 800; color: var(--pitch-green-light); }
+.result-table tr.is-motm { background: rgba(245, 197, 24, 0.08); }
+.result-table tr.is-motm:hover { background: rgba(245, 197, 24, 0.12); }
+@media (max-width: 640px) {
+  .result-tables { grid-template-columns: 1fr; }
+}
+
 /* ---- Auth --------------------------------------------------------------- */
 .auth-wrap { max-width: 420px; margin: 40px auto; }
 .auth-card__title { font-size: 1.5rem; margin-bottom: 4px; }

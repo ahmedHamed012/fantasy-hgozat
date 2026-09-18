@@ -45,6 +45,51 @@ export function calculateMatchPoints(stats: PlayerStatLine): number {
   );
 }
 
+export interface ParticipantStats extends PlayerStatLine {
+  id: string;
+}
+
+/**
+ * Determines Man of the Match participant id(s) from final stats.
+ *
+ * Ranking: highest match points, then the tie-break order goals → assists →
+ * saves (spec §18). Participants still tied after all tie-breakers are joint
+ * MOTM. A scoreless standout (top points ≤ 0) yields no award. Deterministic —
+ * never random.
+ */
+export function determineManOfTheMatch(participants: ParticipantStats[]): string[] {
+  if (participants.length === 0) return [];
+
+  const ranked = participants
+    .map((p) => ({
+      id: p.id,
+      points: calculateMatchPoints(p),
+      goals: p.goals,
+      assists: p.assists,
+      saves: p.saves,
+    }))
+    .sort(
+      (a, b) =>
+        b.points - a.points ||
+        b.goals - a.goals ||
+        b.assists - a.assists ||
+        b.saves - a.saves,
+    );
+
+  const top = ranked[0];
+  if (top.points <= 0) return [];
+
+  return ranked
+    .filter(
+      (p) =>
+        p.points === top.points &&
+        p.goals === top.goals &&
+        p.assists === top.assists &&
+        p.saves === top.saves,
+    )
+    .map((p) => p.id);
+}
+
 interface TeamRef {
   id: string;
 }

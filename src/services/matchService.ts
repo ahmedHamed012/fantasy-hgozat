@@ -2,6 +2,7 @@ import type { Match, MatchStatus, Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma';
 import { AppError } from '../utils/AppError';
 import type { CreateMatchInput } from '../validators/match';
+import { determineManOfTheMatch } from './scoringService';
 
 /** Default two-team setup for a standard match (kept data-driven, not hardcoded
  *  to exactly 10 players — team sizes are validated in the UI, not the DB). */
@@ -124,5 +125,53 @@ export const MatchService = {
       where: { id },
       data: { status: 'LIVE', startedAt: new Date() },
     });
+  },
+
+  /**
+   * Finalizes a LIVE match in a single transaction so it can never be left
+   * partially finished:
+   *   - determines Man of the Match (deterministic, supports joint winners)
+   *   - marks the MOTM participant(s)
+   *   - flips status LIVE -> FINISHED and stamps finishedAt
+   *
+   * Team scores and player points are derived on demand (no denormalized
+   * totals), so nothing else needs persisting here. Achievement evaluation is
+   * added to this transaction in Phase 9.
+   */
+  async finish(id: string): Promise<MatchWithTeamsAndParticipants> {
+    const match = await this.getWithParticipants(id);
+    this.assertStatus(match, 'LIVE', 'Only a live match can be finished.');
+
+    const motmIds = determineManOfTheMatch(match.participants);
+
+    await prisma.$transaction(async (tx) => {
+      if (motmIds.length > 0) {
+        await tx.matchParticipant.updateMany({
+          where: { id: { in: motmIds } },
+          data: { isMotm: true },
+        });
+      }
+      await tx.match.update({
+        where: { id },
+        data: { status: 'FINISHED', finishedAt: new Date() },
+      });
+      // Phase 9: evaluate + unlock achievements within this same transaction.
+    });
+
+    return this.getWithParticipants(id);
+  },
+
+  /**
+   * Cancels a DRAFT or LIVE match. Cancelled matches never contribute to career
+   * statistics (spec §35.15). A finished or already-cancelled match cannot be
+   * cancelled.
+   */
+  async cancel(id: string): Promise<Match> {
+    const match = await prisma.match.findUnique({ where: { id } });
+    if (!match) throw AppError.notFound('Match not found.');
+    if (match.status === 'FINISHED' || match.status === 'CANCELLED') {
+      throw AppError.badRequest('This match can no longer be cancelled.');
+    }
+    return prisma.match.update({ where: { id }, data: { status: 'CANCELLED' } });
   },
 };

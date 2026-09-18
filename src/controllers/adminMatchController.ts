@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
-import { MatchService } from '../services/matchService';
+import { MatchService, type MatchWithTeamsAndParticipants } from '../services/matchService';
 import { PlayerService } from '../services/playerService';
 import { LiveMatchService } from '../services/liveMatchService';
-import { computeTeamScores, isStatKey } from '../services/scoringService';
+import { computeTeamScores, calculateMatchPoints, isStatKey } from '../services/scoringService';
 import { createMatchSchema } from '../validators/match';
 import { playerSchema } from '../validators/player';
 import { AppError } from '../utils/AppError';
@@ -182,5 +182,65 @@ export async function details(req: Request, res: Response): Promise<void> {
     teamB,
     rosterA,
     rosterB,
+  });
+}
+
+export async function finish(req: Request, res: Response): Promise<void> {
+  try {
+    await MatchService.finish(req.params.id);
+    logger.info('Match finished', { matchId: req.params.id });
+    res.redirect(`/admin/matches/${req.params.id}/result`);
+  } catch (err) {
+    if (err instanceof AppError) {
+      // e.g. not LIVE — send them to the current view of the match.
+      res.redirect(`/admin/matches/${req.params.id}`);
+      return;
+    }
+    throw err;
+  }
+}
+
+export async function cancel(req: Request, res: Response): Promise<void> {
+  await MatchService.cancel(req.params.id);
+  logger.info('Match cancelled', { matchId: req.params.id });
+  res.redirect(`/admin/matches/${req.params.id}`);
+}
+
+/** Builds a roster row with computed match points, sorted by points desc. */
+function scoredRoster(
+  participants: MatchWithTeamsAndParticipants['participants'],
+  teamId: string,
+) {
+  return participants
+    .filter((p) => p.teamId === teamId)
+    .map((p) => ({ ...p, points: calculateMatchPoints(p) }))
+    .sort((a, b) => b.points - a.points);
+}
+
+export async function result(req: Request, res: Response): Promise<void> {
+  const match = await MatchService.getWithParticipants(req.params.id);
+  if (match.status === 'DRAFT') {
+    res.redirect(`/admin/matches/${match.id}/setup`);
+    return;
+  }
+  if (match.status === 'LIVE') {
+    res.redirect(`/admin/matches/${match.id}/live`);
+    return;
+  }
+
+  const [teamA, teamB] = match.teams;
+  const scores = computeTeamScores(match.teams, match.participants);
+  const motm = match.participants.filter((p) => p.isMotm);
+
+  res.render('admin/matches/result', {
+    title: res.locals.t('result.title'),
+    match,
+    teamA,
+    teamB,
+    scoreA: scores[teamA.id] ?? 0,
+    scoreB: scores[teamB.id] ?? 0,
+    rosterA: scoredRoster(match.participants, teamA.id),
+    rosterB: scoredRoster(match.participants, teamB.id),
+    motm,
   });
 }
