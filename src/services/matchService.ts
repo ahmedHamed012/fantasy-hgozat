@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import { AppError } from '../utils/AppError';
 import type { CreateMatchInput } from '../validators/match';
 import { determineManOfTheMatch } from './scoringService';
+import { AchievementService } from './achievementService';
 
 /** Default two-team setup for a standard match (kept data-driven, not hardcoded
  *  to exactly 10 players — team sizes are validated in the UI, not the DB). */
@@ -144,6 +145,9 @@ export const MatchService = {
 
     const motmIds = determineManOfTheMatch(match.participants);
 
+    // Ensure the achievement catalog exists (idempotent) before the transaction.
+    const idByCode = await AchievementService.ensureCatalog();
+
     await prisma.$transaction(async (tx) => {
       if (motmIds.length > 0) {
         await tx.matchParticipant.updateMany({
@@ -151,11 +155,15 @@ export const MatchService = {
           data: { isMotm: true },
         });
       }
+      // Mark FINISHED first so career/streak queries in achievement evaluation
+      // (run on the same tx client) include this match.
       await tx.match.update({
         where: { id },
         data: { status: 'FINISHED', finishedAt: new Date() },
       });
-      // Phase 9: evaluate + unlock achievements within this same transaction.
+      for (const part of match.participants) {
+        await AchievementService.evaluateForParticipant(tx, part, id, idByCode);
+      }
     });
 
     return this.getWithParticipants(id);

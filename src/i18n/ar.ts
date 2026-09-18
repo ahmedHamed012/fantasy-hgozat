@@ -208,6 +208,20 @@ export const ar: Record<string, string> = {
   'profile.achievements.empty': 'لم تُفتح أي أوسمة بعد.',
   'profile.noStats': 'لم يلعب هذا اللاعب أي مباريات منتهية بعد.',
 
+  // Achievements
+  'achievement.HAT_TRICK.name': 'هاتريك',
+  'achievement.HAT_TRICK.desc': '3 أهداف أو أكثر في مباراة',
+  'achievement.DOUBLE_HAT_TRICK.name': 'هاتريك مزدوج',
+  'achievement.DOUBLE_HAT_TRICK.desc': '6 أهداف أو أكثر في مباراة',
+  'achievement.PLAYMAKER.name': 'صانع الألعاب',
+  'achievement.PLAYMAKER.desc': '4 تمريرات حاسمة أو أكثر في مباراة',
+  'achievement.WALL.name': 'الحائط',
+  'achievement.WALL.desc': '10 تصديات أو أكثر في مباراة',
+  'achievement.CENTURY.name': 'المئوية',
+  'achievement.CENTURY.desc': '100 نقطة مهنية أو أكثر',
+  'achievement.ON_FIRE.name': 'مشتعل',
+  'achievement.ON_FIRE.desc': 'سجّل في 5 مباريات متتالية',
+
   // Errors
   'error.back': 'العودة للرئيسية',
 };

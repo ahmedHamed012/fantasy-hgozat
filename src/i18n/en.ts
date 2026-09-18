@@ -212,6 +212,20 @@ export const en: Record<string, string> = {
   'profile.achievements.empty': 'No badges unlocked yet.',
   'profile.noStats': 'This player has not played any finished matches yet.',
 
+  // Achievements
+  'achievement.HAT_TRICK.name': 'Hat Trick',
+  'achievement.HAT_TRICK.desc': '3+ goals in one match',
+  'achievement.DOUBLE_HAT_TRICK.name': 'Double Hat Trick',
+  'achievement.DOUBLE_HAT_TRICK.desc': '6+ goals in one match',
+  'achievement.PLAYMAKER.name': 'Playmaker',
+  'achievement.PLAYMAKER.desc': '4+ assists in one match',
+  'achievement.WALL.name': 'Wall',
+  'achievement.WALL.desc': '10+ saves in one match',
+  'achievement.CENTURY.name': 'Century',
+  'achievement.CENTURY.desc': '100+ career points',
+  'achievement.ON_FIRE.name': 'On Fire',
+  'achievement.ON_FIRE.desc': 'Scored in 5 consecutive matches',
+
   // Errors
   'error.back': 'Back to home',
 };

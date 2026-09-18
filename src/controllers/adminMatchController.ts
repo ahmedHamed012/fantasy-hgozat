@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { MatchService, type MatchWithTeamsAndParticipants } from '../services/matchService';
 import { PlayerService } from '../services/playerService';
 import { LiveMatchService } from '../services/liveMatchService';
+import { AchievementService } from '../services/achievementService';
 import { computeTeamScores, calculateMatchPoints, isStatKey } from '../services/scoringService';
 import { createMatchSchema } from '../validators/match';
 import { playerSchema } from '../validators/player';
@@ -232,6 +233,13 @@ export async function result(req: Request, res: Response): Promise<void> {
   const scores = computeTeamScores(match.teams, match.participants);
   const motm = match.participants.filter((p) => p.isMotm);
 
+  // Badges unlocked in this match, with translated display data.
+  const unlocked = await AchievementService.getUnlockedInMatch(match.id);
+  const newAchievements = unlocked.map((u) => ({
+    player: u.player,
+    badge: AchievementService.display(u.achievement.code, res.locals.t),
+  }));
+
   res.render('admin/matches/result', {
     title: res.locals.t('result.title'),
     match,
@@ -242,5 +250,6 @@ export async function result(req: Request, res: Response): Promise<void> {
     rosterA: scoredRoster(match.participants, teamA.id),
     rosterB: scoredRoster(match.participants, teamB.id),
     motm,
+    newAchievements,
   });
 }

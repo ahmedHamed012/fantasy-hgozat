@@ -55,6 +55,17 @@ block content
         .motm-banner__label= motm.length > 1 ? t('result.motm.joint') : t('result.motm')
         .motm-banner__names= motm.map(function(p){ return p.player.name }).join(' · ')
 
+  if newAchievements.length
+    section.profile-section
+      h2.profile-section__title= t('result.newAchievements')
+      .unlocked-list
+        each u in newAchievements
+          .unlocked-item(title=u.badge.description)
+            span.unlocked-item__icon= u.badge.icon
+            span.unlocked-item__text
+              strong= u.player.name
+              span.muted= ' · ' + u.badge.name
+
   .result-tables
     +resultTable(teamA, rosterA)
     +resultTable(teamB, rosterB)
