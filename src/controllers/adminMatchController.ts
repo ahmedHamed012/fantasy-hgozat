@@ -2,6 +2,8 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { MatchService } from '../services/matchService';
 import { PlayerService } from '../services/playerService';
+import { LiveMatchService } from '../services/liveMatchService';
+import { computeTeamScores, isStatKey } from '../services/scoringService';
 import { createMatchSchema } from '../validators/match';
 import { playerSchema } from '../validators/player';
 import { AppError } from '../utils/AppError';
@@ -108,7 +110,7 @@ export async function start(req: Request, res: Response): Promise<void> {
   try {
     await MatchService.start(req.params.id);
     logger.info('Match started', { matchId: req.params.id });
-    res.redirect(`/admin/matches/${req.params.id}`);
+    res.redirect(`/admin/matches/${req.params.id}/live`);
   } catch (err) {
     if (err instanceof AppError) {
       res.redirect(`/admin/matches/${req.params.id}/setup?err=teams`);
@@ -116,6 +118,56 @@ export async function start(req: Request, res: Response): Promise<void> {
     }
     throw err;
   }
+}
+
+/** The live counter screen. Only meaningful for a LIVE match. */
+export async function live(req: Request, res: Response): Promise<void> {
+  const match = await MatchService.getWithParticipants(req.params.id);
+  if (match.status === 'DRAFT') {
+    res.redirect(`/admin/matches/${match.id}/setup`);
+    return;
+  }
+  if (match.status !== 'LIVE') {
+    res.redirect(`/admin/matches/${match.id}`);
+    return;
+  }
+
+  const [teamA, teamB] = match.teams;
+  const scores = computeTeamScores(match.teams, match.participants);
+  res.render('admin/matches/live', {
+    title: match.title || res.locals.t('live.title'),
+    match,
+    teamA,
+    teamB,
+    rosterA: match.participants.filter((p) => p.teamId === teamA.id),
+    rosterB: match.participants.filter((p) => p.teamId === teamB.id),
+    scoreA: scores[teamA.id] ?? 0,
+    scoreB: scores[teamB.id] ?? 0,
+  });
+}
+
+/** Shared handler for increment/decrement AJAX endpoints. */
+async function adjust(req: Request, res: Response, delta: 1 | -1): Promise<void> {
+  const stat = req.body?.stat;
+  if (!isStatKey(stat)) {
+    throw AppError.badRequest('Invalid statistic.');
+  }
+  const result = await LiveMatchService.adjustStat(
+    req.params.id,
+    req.params.participantId,
+    stat,
+    delta,
+    req.user?.sub ?? null,
+  );
+  res.json(result);
+}
+
+export function increment(req: Request, res: Response): Promise<void> {
+  return adjust(req, res, 1);
+}
+
+export function decrement(req: Request, res: Response): Promise<void> {
+  return adjust(req, res, -1);
 }
 
 export async function details(req: Request, res: Response): Promise<void> {

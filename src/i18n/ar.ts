@@ -96,6 +96,19 @@ export const ar: Record<string, string> = {
   'match.details.roster': 'التشكيلة',
   'match.details.empty': 'لا يوجد لاعبون معيّنون.',
 
+  // Live match
+  'live.title': 'مباراة مباشرة',
+  'live.back': 'العودة للمباراة',
+  'live.stat.goals': 'الأهداف',
+  'live.stat.assists': 'التمريرات الحاسمة',
+  'live.stat.saves': 'التصديات',
+  'live.stat.ownGoals': 'أهداف عكسية',
+  'live.decrease': 'إنقاص',
+  'live.increase': 'زيادة',
+  'live.finish': 'إنهاء المباراة',
+  'live.finish.soon': 'الإنهاء سيصل في المرحلة التالية.',
+  'live.offline': 'فشل التحديث — تحقّق من الاتصال وأعد المحاولة.',
+
   // Players
   'player.list.title': 'اللاعبون',
   'player.list.heading': 'اللاعبون',

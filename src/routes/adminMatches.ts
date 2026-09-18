@@ -16,6 +16,7 @@ adminMatchesRouter.post('/', doubleCsrfProtection, asyncHandler(matchController.
 
 adminMatchesRouter.get('/:id', asyncHandler(matchController.details));
 adminMatchesRouter.get('/:id/setup', asyncHandler(matchController.setup));
+adminMatchesRouter.get('/:id/live', asyncHandler(matchController.live));
 adminMatchesRouter.post(
   '/:id/participants',
   doubleCsrfProtection,
@@ -27,3 +28,15 @@ adminMatchesRouter.post(
   asyncHandler(matchController.quickAddPlayer),
 );
 adminMatchesRouter.post('/:id/start', doubleCsrfProtection, asyncHandler(matchController.start));
+
+// Live statistic updates (AJAX; JSON in/out; token via x-csrf-token header).
+adminMatchesRouter.post(
+  '/:id/participants/:participantId/increment',
+  doubleCsrfProtection,
+  asyncHandler(matchController.increment),
+);
+adminMatchesRouter.post(
+  '/:id/participants/:participantId/decrement',
+  doubleCsrfProtection,
+  asyncHandler(matchController.decrement),
+);

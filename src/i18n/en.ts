@@ -100,6 +100,19 @@ export const en: Record<string, string> = {
   'match.details.roster': 'Roster',
   'match.details.empty': 'No players assigned.',
 
+  // Live match
+  'live.title': 'Live match',
+  'live.back': 'Back to match',
+  'live.stat.goals': 'Goals',
+  'live.stat.assists': 'Assists',
+  'live.stat.saves': 'Saves',
+  'live.stat.ownGoals': 'Own goals',
+  'live.decrease': 'Decrease',
+  'live.increase': 'Increase',
+  'live.finish': 'Finish match',
+  'live.finish.soon': 'Finishing arrives in the next phase.',
+  'live.offline': 'Update failed — check connection and retry.',
+
   // Players
   'player.list.title': 'Players',
   'player.list.heading': 'Players',

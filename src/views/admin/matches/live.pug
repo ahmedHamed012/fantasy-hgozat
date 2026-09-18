@@ -1,0 +1,54 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+//- One counter row: [−] value [+] for a single stat of one participant.
+mixin statRow(part, key, icon)
+  .stat-row(data-participant=part.id, data-stat=key)
+    .stat-row__label
+      span.stat-row__icon= icon
+      span.stat-row__name= t('live.stat.' + key)
+    .stat-control
+      button.stat-btn.stat-btn--minus(type="button", data-action="dec", aria-label=t('live.decrease')) −
+      span.stat-value(data-value)= part[key]
+      button.stat-btn.stat-btn--plus(type="button", data-action="inc", aria-label=t('live.increase')) +
+
+mixin playerCard(part)
+  .player-card
+    .player-card__head
+      +avatar(part.player, 'sm')
+      span.player-card__name= part.player.name
+    +statRow(part, 'goals', '⚽')
+    +statRow(part, 'assists', '🎯')
+    +statRow(part, 'saves', '🧤')
+    +statRow(part, 'ownGoals', 'OG')
+
+block content
+  .live-topbar
+    a.btn.btn--ghost.btn--sm(href=`/admin/matches/${match.id}`)= t('live.back')
+    +statusBadge(match.status)
+
+  .scoreboard
+    .scoreboard__team.scoreboard__team--a
+      span.scoreboard__name= teamA.name
+      span.scoreboard__score(data-team=teamA.id)= scoreA
+    span.scoreboard__vs –
+    .scoreboard__team.scoreboard__team--b
+      span.scoreboard__name= teamB.name
+      span.scoreboard__score(data-team=teamB.id)= scoreB
+
+  #live-grid.live-grid(data-match=match.id, data-offline-msg=t('live.offline'))
+    .live-column.live-column--a
+      h2.live-column__title= teamA.name
+      each part in rosterA
+        +playerCard(part)
+    .live-column.live-column--b
+      h2.live-column__title= teamB.name
+      each part in rosterB
+        +playerCard(part)
+
+  .live-actions
+    button.btn.btn--primary.btn--block.btn--finish(type="button", disabled, title=t('live.finish.soon'))= t('live.finish')
+    p.muted.text-center= t('live.finish.soon')
+
+block scripts
+  script(src="/static/js/live-match.js", defer)
