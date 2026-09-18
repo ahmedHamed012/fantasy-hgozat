@@ -14,7 +14,9 @@ block content
     if match.status === 'DRAFT'
       a.btn.btn--ghost(href=`/admin/matches/${match.id}/setup`)= t('match.details.editTeams')
     if match.status === 'LIVE'
-      a.btn.btn--primary(href=`/admin/matches/${match.id}/live`)= t('match.details.goLive')
+      a.btn.btn--primary(href=`/admin/matches/${match.id}/live`)
+        +icon('play')
+        span= ' ' + t('match.details.goLive')
     if match.status === 'FINISHED'
       a.btn.btn--primary(href=`/admin/matches/${match.id}/result`)= t('result.view')
 

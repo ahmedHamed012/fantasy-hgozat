@@ -12,7 +12,8 @@ mixin resultTable(team, roster)
             th.num(title=t('result.col.goals.full'))= t('result.col.goals')
             th.num(title=t('result.col.assists.full'))= t('result.col.assists')
             th.num(title=t('result.col.saves.full'))= t('result.col.saves')
-            th.num OG
+            th.num(title=t('profile.stat.ownGoals'))
+              +icon('owngoal')
             th.num= t('result.col.points')
         tbody
           each p in roster
@@ -23,7 +24,7 @@ mixin resultTable(team, roster)
                   span.player-cell__name
                     = p.player.name
                     if p.isMotm
-                      |  🏆
+                      +icon('trophy', 'motm-mark')
               td.num= p.goals
               td.num= p.assists
               td.num= p.saves
@@ -50,7 +51,8 @@ block content
 
   if motm.length
     .motm-banner
-      span.motm-banner__trophy 🏆
+      span.motm-banner__trophy
+        +icon('trophy')
       div
         .motm-banner__label= motm.length > 1 ? t('result.motm.joint') : t('result.motm')
         .motm-banner__names= motm.map(function(p){ return p.player.name }).join(' · ')
@@ -61,7 +63,8 @@ block content
       .unlocked-list
         each u in newAchievements
           .unlocked-item(title=u.badge.description)
-            span.unlocked-item__icon= u.badge.icon
+            span.unlocked-item__icon
+              +icon(u.badge.icon)
             span.unlocked-item__text
               strong= u.player.name
               span.muted= ' · ' + u.badge.name

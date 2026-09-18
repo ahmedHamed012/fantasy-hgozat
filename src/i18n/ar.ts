@@ -15,10 +15,10 @@ export const ar: Record<string, string> = {
   'nav.logout': 'تسجيل الخروج',
 
   // Footer
-  'footer.text': '⚽ الدوري الأسبوعي · {year}',
+  'footer.text': 'الدوري الأسبوعي · {year}',
 
   // Home
-  'home.hero.title': '⚽ الدوري الأسبوعي',
+  'home.hero.title': 'الدوري الأسبوعي',
   'home.hero.subtitle':
     'حوّل مباريات الخماسي الأسبوعية إلى منافسة تمتد طوال الموسم. سجّل الأهداف والتمريرات الحاسمة والتصديات والنقاط والترتيب والأوسمة — تلقائيًا.',
   'home.cta.leaderboard': 'عرض الترتيب',
@@ -81,7 +81,7 @@ export const ar: Record<string, string> = {
   'match.setup.none': '—',
   'match.setup.save': 'حفظ الفرق',
   'match.setup.saved': 'تم حفظ الفرق.',
-  'match.setup.start': 'بدء المباراة ▶',
+  'match.setup.start': 'بدء المباراة',
   'match.setup.error.teams': 'يحتاج كل فريق إلى لاعب واحد على الأقل قبل البدء.',
   'match.setup.addPlayer': 'إضافة لاعب جديد',
   'match.setup.addPlayer.placeholder': 'اسم اللاعب الجديد',
@@ -91,7 +91,7 @@ export const ar: Record<string, string> = {
   'match.setup.hint5v5': 'المُوصى به: 5 ضد 5.',
 
   'match.details.title': 'تفاصيل المباراة',
-  'match.details.goLive': 'فتح الشاشة المباشرة ▶',
+  'match.details.goLive': 'فتح الشاشة المباشرة',
   'match.details.editTeams': 'تعديل الفرق',
   'match.details.roster': 'التشكيلة',
   'match.details.empty': 'لا يوجد لاعبون معيّنون.',

@@ -16,13 +16,13 @@ block content
           span.muted= t('profile.unranked')
 
   .stat-grid
-    +statTile(t('profile.stat.matches'), stats.matches, '🎽')
-    +statTile(t('profile.stat.goals'), stats.goals, '⚽')
-    +statTile(t('profile.stat.assists'), stats.assists, '🎯')
-    +statTile(t('profile.stat.saves'), stats.saves, '🧤')
-    +statTile(t('profile.stat.ownGoals'), stats.ownGoals, '😬')
-    +statTile(t('profile.stat.motm'), stats.motm, '🏆')
-    +statTile(t('profile.stat.points'), stats.points, '⭐', true)
+    +statTile(t('profile.stat.matches'), stats.matches, 'jersey')
+    +statTile(t('profile.stat.goals'), stats.goals, 'ball')
+    +statTile(t('profile.stat.assists'), stats.assists, 'target')
+    +statTile(t('profile.stat.saves'), stats.saves, 'save')
+    +statTile(t('profile.stat.ownGoals'), stats.ownGoals, 'owngoal')
+    +statTile(t('profile.stat.motm'), stats.motm, 'trophy')
+    +statTile(t('profile.stat.points'), stats.points, 'star', true)
 
   section.profile-section
     h2.profile-section__title= t('profile.achievements.heading')
@@ -57,7 +57,7 @@ block content
                   span.outcome(class=`outcome--${m.outcome.toLowerCase()}`)= t('profile.outcome.' + m.outcome)
                   span.result-score= ` ${m.scoreFor}–${m.scoreAgainst}`
                   if m.isMotm
-                    |  🏆
+                    +icon('trophy', 'motm-mark')
                 td.num= m.goals
                 td.num= m.assists
                 td.num= m.saves

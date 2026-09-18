@@ -18,10 +18,10 @@ export const en: Record<string, string> = {
   'nav.logout': 'Log out',
 
   // Footer
-  'footer.text': '⚽ Weekly Football · {year}',
+  'footer.text': 'Weekly Football · {year}',
 
   // Home
-  'home.hero.title': '⚽ Weekly Football',
+  'home.hero.title': 'Weekly Football',
   'home.hero.subtitle':
     'Turn your weekly 5-a-side matches into a season-long competition. Track goals, assists, saves, points, rankings and badges — automatically.',
   'home.cta.leaderboard': 'View leaderboard',
@@ -85,7 +85,7 @@ export const en: Record<string, string> = {
   'match.setup.none': '—',
   'match.setup.save': 'Save teams',
   'match.setup.saved': 'Teams saved.',
-  'match.setup.start': 'Start match ▶',
+  'match.setup.start': 'Start match',
   'match.setup.error.teams': 'Each team needs at least one player before starting.',
   'match.setup.addPlayer': 'Add new player',
   'match.setup.addPlayer.placeholder': 'New player name',
@@ -95,7 +95,7 @@ export const en: Record<string, string> = {
   'match.setup.hint5v5': 'Recommended: 5 vs 5.',
 
   'match.details.title': 'Match details',
-  'match.details.goLive': 'Open live screen ▶',
+  'match.details.goLive': 'Open live screen',
   'match.details.editTeams': 'Edit teams',
   'match.details.roster': 'Roster',
   'match.details.empty': 'No players assigned.',

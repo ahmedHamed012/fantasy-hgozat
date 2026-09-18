@@ -1,3 +1,5 @@
 footer.site-footer
   .container
-    p.site-footer__text= t('footer.text', { year: currentYear })
+    p.site-footer__text
+      +icon('ball')
+      span= ' ' + t('footer.text', { year: currentYear })

@@ -1,7 +1,8 @@
 header.site-header
   .container.site-header__inner
     a.site-header__brand(href="/")
-      span.site-header__logo ⚽
+      span.site-header__logo
+        +icon('ball')
       span.site-header__title= t('app.name')
     nav.site-nav
       a.site-nav__link(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')

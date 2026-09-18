@@ -34,12 +34,45 @@
   --transition: 140ms ease;
 
   --container: 1080px;
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* Arabic-capable stack for RTL rendering. */
-  --font-ar: "Segoe UI", Tahoma, "Noto Sans Arabic", "Geeza Pro", Arial, sans-serif;
+  /* Montserrat for English (LTR). */
+  --font: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Cairo for Arabic (RTL). */
+  --font-ar: "Cairo", "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
 }
 
 html[dir="rtl"] body { font-family: var(--font-ar); }
+
+/* ---- Icons -------------------------------------------------------------- */
+.icon {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.18em;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+/* Contextual icon colours / sizes (font-size on the wrapper drives em sizing). */
+.site-header__logo { color: var(--pitch-green-light); display: inline-flex; align-items: center; }
+.hero__title .icon { color: var(--pitch-green-light); }
+.title-icon { color: var(--pitch-green-light); }
+.feature-card__icon { color: var(--pitch-green-light); }
+.stat-tile__icon { color: var(--text-muted); }
+.stat-tile--primary .stat-tile__icon { color: var(--pitch-green-light); }
+.badge-card__icon { color: var(--gold); }
+.motm-banner__trophy { color: var(--gold); }
+.motm-mark { color: var(--gold); width: 1em; height: 1em; margin-inline-start: 5px; }
+.unlocked-item__icon { color: var(--gold); }
+.rank-medal { width: 1.5em; height: 1.5em; }
+.rank-medal--1 { color: #f5c518; }
+.rank-medal--2 { color: #c0c7d1; }
+.rank-medal--3 { color: #cd7f32; }
+
+/* Live counter stat-row icons, coloured by statistic. */
+.stat-row--goals .stat-row__icon { color: var(--pitch-green-light); }
+.stat-row--assists .stat-row__icon { color: #60a5fa; }
+.stat-row--saves .stat-row__icon { color: #a78bfa; }
+.stat-row--ownGoals .stat-row__icon { color: var(--danger); }
 
 * { box-sizing: border-box; }
 

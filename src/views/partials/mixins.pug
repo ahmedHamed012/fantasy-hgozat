@@ -5,21 +5,28 @@
 mixin csrf
   input(type="hidden", name="_csrf", value=csrfToken)
 
+//- Inline SVG icon referencing the sprite in partials/icons.pug.
+mixin icon(name, cls)
+  svg.icon(class=cls, aria-hidden="true", focusable="false")
+    use(href=`#i-${name}`)
+
 //- Coloured status badge for a match status (DRAFT/LIVE/FINISHED/CANCELLED).
 mixin statusBadge(status)
   span.status-badge(class=`status-badge--${status.toLowerCase()}`)= t('match.status.' + status)
 
-//- Stat tile for profile/dashboard summaries.
-mixin statTile(label, value, icon, highlight)
+//- Stat tile for profile/dashboard summaries. `iconName` references the sprite.
+mixin statTile(label, value, iconName, highlight)
   .stat-tile(class=(highlight ? 'stat-tile--primary' : ''))
-    .stat-tile__icon(aria-hidden="true")= icon
+    .stat-tile__icon
+      +icon(iconName)
     .stat-tile__value= value
     .stat-tile__label= label
 
-//- Achievement badge card. `a` = { icon, name, description }.
+//- Achievement badge card. `a` = { icon (sprite name), name, description }.
 mixin achievementBadge(a)
   .badge-card(title=a.description)
-    .badge-card__icon(aria-hidden="true")= a.icon
+    .badge-card__icon
+      +icon(a.icon)
     .badge-card__name= a.name
 
 //- Player avatar: image when avatarUrl is set, otherwise an initials circle.

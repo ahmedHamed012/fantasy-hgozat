@@ -7,9 +7,14 @@ html(lang=locale, dir=dir)
     if csrfToken
       meta(name="csrf-token", content=csrfToken)
     title= title ? `${title} · ${t('app.name')}` : t('app.name')
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap")
     link(rel="stylesheet", href="/static/css/style.css")
     block head
   body
+    include ../partials/mixins
+    include ../partials/icons
     include ../partials/header
     main.container
       block content

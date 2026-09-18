@@ -2,10 +2,11 @@ extends ../../layouts/base
 include ../../partials/mixins
 
 //- One counter row: [−] value [+] for a single stat of one participant.
-mixin statRow(part, key, icon)
-  .stat-row(data-participant=part.id, data-stat=key)
+mixin statRow(part, key, iconName)
+  .stat-row(data-participant=part.id, data-stat=key, class=`stat-row--${key}`)
     .stat-row__label
-      span.stat-row__icon= icon
+      span.stat-row__icon
+        +icon(iconName)
       span.stat-row__name= t('live.stat.' + key)
     .stat-control
       button.stat-btn.stat-btn--minus(type="button", data-action="dec", aria-label=t('live.decrease')) −
@@ -17,10 +18,10 @@ mixin playerCard(part)
     .player-card__head
       +avatar(part.player, 'sm')
       span.player-card__name= part.player.name
-    +statRow(part, 'goals', '⚽')
-    +statRow(part, 'assists', '🎯')
-    +statRow(part, 'saves', '🧤')
-    +statRow(part, 'ownGoals', 'OG')
+    +statRow(part, 'goals', 'ball')
+    +statRow(part, 'assists', 'target')
+    +statRow(part, 'saves', 'save')
+    +statRow(part, 'ownGoals', 'owngoal')
 
 block content
   .live-topbar

@@ -61,7 +61,9 @@ block content
   //- Start the match (uses the saved teams).
   form.start-form(method="post", action=`/admin/matches/${match.id}/start`)
     +csrf
-    button.btn.btn--primary.btn--block.btn--start(type="submit")= t('match.setup.start')
+    button.btn.btn--primary.btn--block.btn--start(type="submit")
+      +icon('play')
+      span= ' ' + t('match.setup.start')
 
 block scripts
   script(src="/static/js/match-setup.js", defer)

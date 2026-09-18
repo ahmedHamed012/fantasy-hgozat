@@ -36,42 +36,42 @@ export interface AchievementDefinition {
 export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     code: 'HAT_TRICK',
-    icon: '🎩',
+    icon: 'hat',
     name: 'Hat Trick',
     description: '3+ goals in one match',
     evaluate: (c) => c.match.goals >= 3,
   },
   {
     code: 'DOUBLE_HAT_TRICK',
-    icon: '🎩🎩',
+    icon: 'hat-double',
     name: 'Double Hat Trick',
     description: '6+ goals in one match',
     evaluate: (c) => c.match.goals >= 6,
   },
   {
     code: 'PLAYMAKER',
-    icon: '🅰️',
+    icon: 'target',
     name: 'Playmaker',
     description: '4+ assists in one match',
     evaluate: (c) => c.match.assists >= 4,
   },
   {
     code: 'WALL',
-    icon: '🧱',
+    icon: 'wall',
     name: 'Wall',
     description: '10+ saves in one match',
     evaluate: (c) => c.match.saves >= 10,
   },
   {
     code: 'CENTURY',
-    icon: '💯',
+    icon: 'century',
     name: 'Century',
     description: '100+ career points',
     evaluate: (c) => c.career.points >= 100,
   },
   {
     code: 'ON_FIRE',
-    icon: '🔥',
+    icon: 'fire',
     name: 'On Fire',
     description: 'Scored in 5 consecutive matches',
     evaluate: (c) => c.recentGoals.length >= 5 && c.recentGoals.slice(0, 5).every((g) => g >= 1),
@@ -172,7 +172,7 @@ export const AchievementService = {
     const def = ACHIEVEMENT_DEFINITIONS.find((d) => d.code === code);
     return {
       code,
-      icon: def?.icon ?? '🏅',
+      icon: def?.icon ?? 'badge',
       name: t(`achievement.${code}.name`),
       description: t(`achievement.${code}.desc`),
     };

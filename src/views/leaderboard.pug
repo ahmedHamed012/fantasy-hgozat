@@ -3,7 +3,9 @@ include partials/mixins
 
 block content
   .page-head
-    h1.page-head__title 🏆 #{t('leaderboard.heading')}
+    h1.page-head__title
+      +icon('trophy', 'title-icon')
+      span= ' ' + t('leaderboard.heading')
 
   if rows.length === 0
     .empty-state= t('leaderboard.empty')
@@ -23,11 +25,10 @@ block content
             th.num= t('leaderboard.col.points')
         tbody
           each row in rows
-            - var medal = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : null
             tr(class=(row.rank <= 3 ? 'is-podium' : ''))
               td.num.rank-cell
-                if medal
-                  span.rank-medal= medal
+                if row.rank <= 3
+                  +icon('medal', `rank-medal rank-medal--${row.rank}`)
                 else
                   = row.rank
               td

@@ -2,7 +2,9 @@ extends layouts/base
 
 block content
   section.hero
-    h1.hero__title= t('home.hero.title')
+    h1.hero__title
+      +icon('ball', 'hero__logo')
+      span= ' ' + t('home.hero.title')
     p.hero__subtitle= t('home.hero.subtitle')
     .hero__actions
       a.btn.btn--primary(href="/leaderboard")= t('home.cta.leaderboard')
@@ -10,14 +12,17 @@ block content
 
   section.feature-grid
     .feature-card
-      .feature-card__icon ⚡
+      .feature-card__icon
+        +icon('bolt')
       h3.feature-card__title= t('home.feature.fast.title')
       p.feature-card__text= t('home.feature.fast.text')
     .feature-card
-      .feature-card__icon 🏆
+      .feature-card__icon
+        +icon('trophy')
       h3.feature-card__title= t('home.feature.points.title')
       p.feature-card__text= t('home.feature.points.text')
     .feature-card
-      .feature-card__icon 🎖️
+      .feature-card__icon
+        +icon('medal')
       h3.feature-card__title= t('home.feature.badges.title')
       p.feature-card__text= t('home.feature.badges.text')
