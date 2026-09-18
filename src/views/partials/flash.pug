@@ -1,0 +1,4 @@
+//- Renders flash-style messages passed via `flash` local:
+//-   flash = { type: 'success' | 'error' | 'info', message: '...' }
+if flash && flash.message
+  .alert(class=`alert--${flash.type || 'info'}`)= flash.message

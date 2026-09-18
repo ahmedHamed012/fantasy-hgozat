@@ -1,0 +1,23 @@
+extends layouts/base
+
+block content
+  section.hero
+    h1.hero__title= t('home.hero.title')
+    p.hero__subtitle= t('home.hero.subtitle')
+    .hero__actions
+      a.btn.btn--primary(href="/leaderboard")= t('home.cta.leaderboard')
+      a.btn.btn--ghost(href="/auth/login")= t('home.cta.login')
+
+  section.feature-grid
+    .feature-card
+      .feature-card__icon ⚡
+      h3.feature-card__title= t('home.feature.fast.title')
+      p.feature-card__text= t('home.feature.fast.text')
+    .feature-card
+      .feature-card__icon 🏆
+      h3.feature-card__title= t('home.feature.points.title')
+      p.feature-card__text= t('home.feature.points.text')
+    .feature-card
+      .feature-card__icon 🎖️
+      h3.feature-card__title= t('home.feature.badges.title')
+      p.feature-card__text= t('home.feature.badges.text')

@@ -1,0 +1,250 @@
+/* =========================================================================
+   Weekly Football — base design system
+   Design tokens first, then base elements, then components. Later phases add
+   component styles (players, live match, leaderboard) below the base layer.
+   ========================================================================= */
+
+:root {
+  /* Brand */
+  --pitch-green: #0b8f3a;
+  --pitch-green-dark: #067a30;
+  --pitch-green-light: #12b04a;
+
+  /* Neutrals */
+  --bg: #0f1216;
+  --surface: #1a1f26;
+  --surface-2: #222831;
+  --border: #2e3742;
+  --text: #eef2f6;
+  --text-muted: #9aa7b4;
+  --text-faint: #6b7885;
+
+  /* Feedback */
+  --danger: #e5484d;
+  --warning: #f5a524;
+  --success: #30a46c;
+  --gold: #f5c518;
+
+  /* Shape & motion */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  --ring: 0 0 0 3px rgba(18, 176, 74, 0.35);
+  --transition: 140ms ease;
+
+  --container: 1080px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Arabic-capable stack for RTL rendering. */
+  --font-ar: "Segoe UI", Tahoma, "Noto Sans Arabic", "Geeza Pro", Arial, sans-serif;
+}
+
+html[dir="rtl"] body { font-family: var(--font-ar); }
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 50% -200px, rgba(18, 176, 74, 0.12), transparent 70%),
+    var(--bg);
+  min-height: 100vh;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 0.5em; }
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
+
+/* ---- Header / nav ------------------------------------------------------- */
+.site-header {
+  background: rgba(15, 18, 22, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.site-header__brand { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.site-header__logo { font-size: 1.4rem; }
+.site-header__title { letter-spacing: 0.2px; }
+.site-nav { display: flex; gap: 4px; }
+.site-nav__link {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+.site-nav__link:hover { color: var(--text); background: var(--surface-2); }
+.site-nav__link.is-active { color: var(--text); background: var(--surface-2); }
+.site-nav__lang {
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+.site-nav__lang:hover { border-color: var(--pitch-green); }
+
+/* ---- Footer ------------------------------------------------------------- */
+.site-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+  color: var(--text-faint);
+  font-size: 0.9rem;
+}
+.site-footer__text { margin: 0; text-align: center; }
+
+/* ---- Buttons ------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--surface-2);
+  color: var(--text);
+  min-height: 44px;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:focus-visible { outline: none; box-shadow: var(--ring); }
+.btn--primary { background: var(--pitch-green); border-color: var(--pitch-green); }
+.btn--primary:hover { background: var(--pitch-green-light); }
+.btn--ghost { background: transparent; border-color: var(--border); color: var(--text-muted); }
+.btn--ghost:hover { color: var(--text); border-color: var(--text-faint); }
+.btn--danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+.btn--danger:hover { background: var(--danger); color: #fff; }
+.btn--sm { padding: 7px 12px; min-height: 36px; font-size: 0.88rem; }
+.btn--block { width: 100%; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ---- Cards -------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ---- Hero (home) -------------------------------------------------------- */
+.hero { text-align: center; padding: 48px 0 32px; }
+.hero__title { font-size: clamp(2rem, 6vw, 3.2rem); }
+.hero__subtitle {
+  color: var(--text-muted);
+  max-width: 620px;
+  margin: 0 auto 24px;
+  font-size: 1.05rem;
+}
+.hero__actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+.feature-card__icon { font-size: 1.8rem; }
+.feature-card__title { margin: 12px 0 6px; font-size: 1.1rem; }
+.feature-card__text { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+/* ---- Alerts ------------------------------------------------------------- */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+.alert--success { background: rgba(48, 163, 108, 0.12); border-color: var(--success); color: #7ee0af; }
+.alert--error { background: rgba(229, 72, 77, 0.12); border-color: var(--danger); color: #f6a5a7; }
+.alert--info { background: rgba(18, 176, 74, 0.1); border-color: var(--pitch-green); color: #9fe6b8; }
+
+/* ---- Forms -------------------------------------------------------------- */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 1rem;
+  min-height: 44px;
+}
+.form-input:focus,
+.form-select:focus { outline: none; border-color: var(--pitch-green); box-shadow: var(--ring); }
+.form-hint { font-size: 0.82rem; color: var(--text-faint); margin-top: 4px; }
+
+/* ---- Tables ------------------------------------------------------------- */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.table th, .table td { padding: 12px 14px; text-align: start; }
+.table thead th {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.table tbody tr { border-top: 1px solid var(--border); background: var(--surface); }
+.table tbody tr:hover { background: var(--surface-2); }
+.table .num { text-align: end; font-variant-numeric: tabular-nums; }
+
+/* ---- Page headers ------------------------------------------------------- */
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.page-head__title { margin: 0; font-size: 1.6rem; }
+
+/* ---- Utility ------------------------------------------------------------ */
+.muted { color: var(--text-muted); }
+.text-center { text-align: center; }
+.empty-state { text-align: center; color: var(--text-muted); padding: 48px 16px; }
+
+/* ---- Error page --------------------------------------------------------- */
+.error-page { text-align: center; padding: 64px 0; }
+.error-page__code { font-size: 4rem; font-weight: 800; color: var(--pitch-green); }
+.error-page__title { color: var(--text-muted); font-weight: 500; margin-bottom: 24px; }

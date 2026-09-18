@@ -1,0 +1,15 @@
+doctype html
+html(lang=locale, dir=dir)
+  head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, viewport-fit=cover")
+    meta(name="theme-color", content="#0b8f3a")
+    title= title ? `${title} · ${t('app.name')}` : t('app.name')
+    link(rel="stylesheet", href="/static/css/style.css")
+    block head
+  body
+    include ../partials/header
+    main.container
+      block content
+    include ../partials/footer
+    block scripts

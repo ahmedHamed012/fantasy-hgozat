@@ -1,0 +1,18 @@
+// Prisma schema — Weekly Football
+//
+// Phase 1 establishes only the datasource + generator so the toolchain is
+// coherent. Phase 2 adds the full domain models (User, Player, Match,
+// MatchTeam, MatchParticipant, MatchEvent, Achievement, PlayerAchievement)
+// and the first migration.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Pooled connection used at runtime (serverless-friendly).
+  url       = env("DATABASE_URL")
+  // Direct connection used by Prisma Migrate.
+  directUrl = env("DIRECT_URL")
+}

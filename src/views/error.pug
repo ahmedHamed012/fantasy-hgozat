@@ -1,0 +1,7 @@
+extends layouts/base
+
+block content
+  section.error-page
+    .error-page__code= statusCode
+    h1.error-page__title= message
+    a.btn.btn--primary(href="/")= t('error.back')
