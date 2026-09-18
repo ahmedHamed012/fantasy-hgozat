@@ -1,9 +1,13 @@
 // Prisma schema — Weekly Football
 //
-// Phase 1 establishes only the datasource + generator so the toolchain is
-// coherent. Phase 2 adds the full domain models (User, Player, Match,
-// MatchTeam, MatchParticipant, MatchEvent, Achievement, PlayerAchievement)
-// and the first migration.
+// Domain model for a weekly 5-a-side competition. Design goals:
+//  - Players are a global pool; each match selects its own participants.
+//  - Teams are per-match (never permanent).
+//  - Per-player, per-match stats live on MatchParticipant (counters).
+//  - MatchEvent is a lightweight append-only history behind the counters,
+//    enabling corrections/auditing without the live UI depending on it.
+//  - Career stats + rankings are computed by aggregation (no denormalized
+//    totals in the MVP), so they can never drift out of sync.
 
 generator client {
   provider = "prisma-client-js"
@@ -11,8 +15,195 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // Pooled connection used at runtime (serverless-friendly).
-  url       = env("DATABASE_URL")
-  // Direct connection used by Prisma Migrate.
-  directUrl = env("DIRECT_URL")
+  url       = env("DATABASE_URL") // pooled (runtime, serverless-friendly)
+  directUrl = env("DIRECT_URL") // direct (Prisma Migrate)
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+/// Kept extensible for future roles (e.g. SCOREKEEPER) without a migration
+/// churn on existing rows.
+enum Role {
+  ADMIN
+}
+
+enum MatchStatus {
+  DRAFT
+  LIVE
+  FINISHED
+  CANCELLED
+}
+
+enum MatchEventType {
+  GOAL
+  ASSIST
+  SAVE
+  OWN_GOAL
+  CORRECTION
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+/// Authenticated admin users. Passwords are always stored hashed.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdMatches Match[]      @relation("MatchCreatedBy")
+  recordedEvents MatchEvent[] @relation("EventCreatedBy")
+
+  @@map("users")
+}
+
+/// A football player. Part of a global pool, not tied to any single match.
+/// Never hard-deleted once they have history — deactivated via isActive.
+model Player {
+  id        String   @id @default(cuid())
+  name      String
+  nickname  String?
+  avatarUrl String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participations MatchParticipant[]
+  achievements   PlayerAchievement[]
+
+  @@index([isActive])
+  @@map("players")
+}
+
+/// One football session. Owns its teams, participants and event history.
+model Match {
+  id          String      @id @default(cuid())
+  title       String?
+  matchDate   DateTime
+  status      MatchStatus @default(DRAFT)
+  createdById String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  startedAt   DateTime?
+  finishedAt  DateTime?
+
+  createdBy    User               @relation("MatchCreatedBy", fields: [createdById], references: [id])
+  teams        MatchTeam[]
+  participants MatchParticipant[]
+  events       MatchEvent[]
+
+  @@index([status])
+  @@index([matchDate])
+  @@index([createdById])
+  @@map("matches")
+}
+
+/// A team that exists only within a single match (e.g. "Team A" / "Team B").
+model MatchTeam {
+  id        String @id @default(cuid())
+  matchId   String
+  name      String
+  shortName String
+
+  match        Match              @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  participants MatchParticipant[]
+
+  // Prevents duplicate team names within the same match.
+  @@unique([matchId, name])
+  @@index([matchId])
+  @@map("match_teams")
+}
+
+/// A player's participation in a specific match, carrying the live counters.
+/// The assigned team must belong to the same match — enforced in the service
+/// layer (a DB constraint cannot express the cross-column relationship).
+model MatchParticipant {
+  id        String   @id @default(cuid())
+  matchId   String
+  playerId  String
+  teamId    String
+  goals     Int      @default(0)
+  assists   Int      @default(0)
+  saves     Int      @default(0)
+  ownGoals  Int      @default(0)
+  /// Set when the match is finished; supports joint Man of the Match on ties.
+  isMotm    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  match  Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player       @relation(fields: [playerId], references: [id])
+  team   MatchTeam    @relation(fields: [teamId], references: [id])
+  events MatchEvent[]
+
+  // A player cannot participate twice in the same match.
+  @@unique([matchId, playerId])
+  @@index([playerId])
+  @@index([teamId])
+  @@index([matchId])
+  @@map("match_participants")
+}
+
+/// Append-only history behind the counters. Every increment/decrement writes a
+/// row; corrections are recorded as new rows rather than destroying history.
+model MatchEvent {
+  id                 String         @id @default(cuid())
+  matchId            String
+  matchParticipantId String
+  type               MatchEventType
+  /// +1 for an increment, -1 for a decrement/correction.
+  value              Int
+  createdAt          DateTime       @default(now())
+  createdById        String?
+
+  match       Match            @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  participant MatchParticipant @relation(fields: [matchParticipantId], references: [id], onDelete: Cascade)
+  createdBy   User?            @relation("EventCreatedBy", fields: [createdById], references: [id])
+
+  @@index([matchId])
+  @@index([matchParticipantId])
+  @@map("match_events")
+}
+
+/// Catalog of available achievements. Definitions are also mirrored in the
+/// AchievementService config (the source of truth for unlock rules); this table
+/// stores the canonical English label + icon and is seeded from that config.
+/// Display strings are translated in views via i18n keys `achievement.<code>.*`.
+model Achievement {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String
+  icon        String
+  createdAt   DateTime @default(now())
+
+  players PlayerAchievement[]
+
+  @@map("achievements")
+}
+
+/// Junction: an achievement a player has unlocked (once). Optionally records
+/// the match in which it was unlocked, for the match-result "newly unlocked"
+/// list and profile context.
+model PlayerAchievement {
+  id            String   @id @default(cuid())
+  playerId      String
+  achievementId String
+  matchId       String?
+  unlockedAt    DateTime @default(now())
+
+  player      Player      @relation(fields: [playerId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  // An achievement unlocks at most once per player.
+  @@unique([playerId, achievementId])
+  @@index([playerId])
+  @@index([achievementId])
+  @@map("player_achievements")
 }
