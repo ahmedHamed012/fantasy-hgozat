@@ -1,0 +1,37 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title= t('match.new.heading')
+
+  .card.form-card
+    form(method="post", action="/admin/matches")
+      +csrf
+      .form-group
+        label.form-label(for="matchDate")= t('match.field.date')
+        input.form-input#matchDate(
+          type="date",
+          name="matchDate",
+          value=values.matchDate,
+          required,
+          class=(errors.matchDate ? 'is-invalid' : '')
+        )
+        if errors.matchDate
+          .field-error= errors.matchDate
+      .form-group
+        label.form-label(for="title")= t('match.field.title')
+          span.form-label__hint= ' · ' + t('match.field.title.hint')
+        input.form-input#title(
+          type="text",
+          name="title",
+          value=values.title,
+          maxlength="100",
+          placeholder="Friday night",
+          class=(errors.title ? 'is-invalid' : '')
+        )
+        if errors.title
+          .field-error= errors.title
+      .form-actions
+        a.btn.btn--ghost(href="/admin/matches")= t('player.form.cancel')
+        button.btn.btn--primary(type="submit")= t('match.new.create')

@@ -5,6 +5,10 @@
 mixin csrf
   input(type="hidden", name="_csrf", value=csrfToken)
 
+//- Coloured status badge for a match status (DRAFT/LIVE/FINISHED/CANCELLED).
+mixin statusBadge(status)
+  span.status-badge(class=`status-badge--${status.toLowerCase()}`)= t('match.status.' + status)
+
 //- Player avatar: image when avatarUrl is set, otherwise an initials circle.
 mixin avatar(player, size)
   - var s = size || 'md'

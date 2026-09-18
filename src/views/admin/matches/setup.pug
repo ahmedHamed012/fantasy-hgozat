@@ -1,0 +1,67 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    div
+      h1.page-head__title= t('match.setup.heading')
+      p.muted
+        = (match.title || t('match.untitled')) + ' · ' + formatDate(match.matchDate) + ' · '
+        +statusBadge(match.status)
+    a.btn.btn--ghost.btn--sm(href="/admin/matches")= t('match.list.heading')
+
+  if saved
+    .alert.alert--success= t('match.setup.saved')
+  if err === 'teams'
+    .alert.alert--error= t('match.setup.error.teams')
+
+  p.muted= t('match.setup.intro')
+
+  .team-counts
+    span.team-chip.team-chip--a
+      | #{teamA.name}:
+      strong#count-a= countA
+    span.team-chip.team-chip--b
+      | #{teamB.name}:
+      strong#count-b= countB
+    span.muted.hint-5v5= t('match.setup.hint5v5')
+
+  form#assign-form(method="post", action=`/admin/matches/${match.id}/participants`, data-team-a=teamA.id, data-team-b=teamB.id, data-team-a-short=teamA.shortName, data-team-b-short=teamB.shortName, data-none-label=t('match.setup.none'))
+    +csrf
+    ul#player-list.assign-list
+      if rows.length === 0
+        li.empty-state#empty-row= t('match.setup.noPlayers')
+      each row in rows
+        li.assign-row(data-player-id=row.player.id)
+          .assign-row__player
+            +avatar(row.player, 'sm')
+            span.assign-row__name= row.player.name
+          .segmented
+            label.segmented__opt
+              input(type="radio", name=`assign[${row.player.id}]`, value="", checked=(row.teamId === ''))
+              span= t('match.setup.none')
+            label.segmented__opt.segmented__opt--a
+              input(type="radio", name=`assign[${row.player.id}]`, value=teamA.id, checked=(row.teamId === teamA.id))
+              span= teamA.shortName
+            label.segmented__opt.segmented__opt--b
+              input(type="radio", name=`assign[${row.player.id}]`, value=teamB.id, checked=(row.teamId === teamB.id))
+              span= teamB.shortName
+    .form-actions.form-actions--split
+      button.btn.btn--primary(type="submit")= t('match.setup.save')
+
+  //- Quick-add a new player without leaving setup.
+  .card.add-player-card
+    h3.add-player-card__title= t('match.setup.addPlayer')
+    form#add-player-form(data-url=`/admin/matches/${match.id}/quick-player`)
+      .add-player-row
+        input.form-input#new-player-name(type="text", name="name", maxlength="60", placeholder=t('match.setup.addPlayer.placeholder'), autocomplete="off")
+        button.btn.btn--ghost(type="submit")= t('match.setup.addPlayer.button')
+      .field-error#add-player-error(hidden, data-fallback=t('match.setup.addPlayer.failed'))
+
+  //- Start the match (uses the saved teams).
+  form.start-form(method="post", action=`/admin/matches/${match.id}/start`)
+    +csrf
+    button.btn.btn--primary.btn--block.btn--start(type="submit")= t('match.setup.start')
+
+block scripts
+  script(src="/static/js/match-setup.js", defer)

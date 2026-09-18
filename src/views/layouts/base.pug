@@ -4,6 +4,8 @@ html(lang=locale, dir=dir)
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1, viewport-fit=cover")
     meta(name="theme-color", content="#0b8f3a")
+    if csrfToken
+      meta(name="csrf-token", content=csrfToken)
     title= title ? `${title} · ${t('app.name')}` : t('app.name')
     link(rel="stylesheet", href="/static/css/style.css")
     block head

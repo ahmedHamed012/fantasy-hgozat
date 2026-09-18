@@ -28,6 +28,14 @@ export function localeMiddleware(req: Request, res: Response, next: NextFunction
   // The locale a switch link should flip to (the other supported language).
   res.locals.otherLocale = locale === 'en' ? 'ar' : 'en';
 
+  // Locale-aware date formatter for views.
+  const dateFmt = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG' : 'en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+  res.locals.formatDate = (value: Date | string) => dateFmt.format(new Date(value));
+
   next();
 }
 

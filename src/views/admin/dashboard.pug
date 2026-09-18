@@ -10,4 +10,6 @@ block content
     p= t('admin.dashboard.welcome', { email: currentUser.email })
     p.muted= t('admin.dashboard.placeholder')
     .dashboard-links
-      a.btn.btn--primary(href="/admin/players")= t('admin.nav.players')
+      a.btn.btn--primary(href="/admin/matches/new")= t('admin.nav.newMatch')
+      a.btn.btn--ghost(href="/admin/matches")= t('admin.nav.matches')
+      a.btn.btn--ghost(href="/admin/players")= t('admin.nav.players')

@@ -310,6 +310,95 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
 .dashboard-links { margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; }
 
+/* ---- Match status badge ------------------------------------------------- */
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+.status-badge--draft { background: rgba(154, 167, 180, 0.15); color: var(--text-muted); }
+.status-badge--live { background: rgba(229, 72, 77, 0.18); color: #ff6b6f; }
+.status-badge--finished { background: rgba(48, 163, 108, 0.15); color: #7ee0af; }
+.status-badge--cancelled { background: rgba(245, 165, 36, 0.15); color: var(--warning); }
+
+/* ---- Match setup: team counts ------------------------------------------- */
+.team-counts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.team-chip {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.team-chip--a { border-color: rgba(59, 130, 246, 0.5); background: rgba(59, 130, 246, 0.1); }
+.team-chip--b { border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.1); }
+.hint-5v5 { font-size: 0.85rem; }
+
+/* ---- Match setup: assignment list --------------------------------------- */
+.assign-list { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.assign-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.assign-row__player { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.assign-row__name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Segmented None/A/B control with large touch targets. */
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; }
+.segmented__opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  min-height: 40px;
+  padding: 0 12px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-inline-start: 1px solid var(--border);
+  transition: var(--transition);
+  user-select: none;
+}
+.segmented__opt:first-child { border-inline-start: none; }
+.segmented__opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.segmented__opt:hover { background: var(--surface-2); color: var(--text); }
+.segmented__opt:has(input:checked) { color: #fff; }
+.segmented__opt--a:has(input:checked) { background: #3b82f6; }
+.segmented__opt--b:has(input:checked) { background: #f59e0b; }
+.segmented__opt:not(.segmented__opt--a):not(.segmented__opt--b):has(input:checked) { background: var(--surface-2); color: var(--text); }
+.segmented__opt:focus-within { box-shadow: inset var(--ring); }
+
+.form-actions--split { justify-content: flex-start; }
+
+/* ---- Match setup: add player + start ------------------------------------ */
+.add-player-card { margin-bottom: 20px; }
+.add-player-card__title { font-size: 1rem; margin-bottom: 12px; }
+.add-player-row { display: flex; gap: 8px; }
+.add-player-row .form-input { flex: 1; }
+.start-form { margin-top: 8px; }
+.btn--start { font-size: 1.1rem; padding: 14px; }
+
+/* ---- Match details: rosters --------------------------------------------- */
+.match-actions { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.rosters { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.roster-card__title { font-size: 1.1rem; margin-bottom: 12px; }
+.roster-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.roster-item { display: flex; align-items: center; gap: 10px; }
+@media (max-width: 560px) {
+  .rosters { grid-template-columns: 1fr; }
+}
+
 /* ---- Auth --------------------------------------------------------------- */
 .auth-wrap { max-width: 420px; margin: 40px auto; }
 .auth-card__title { font-size: 1.5rem; margin-bottom: 4px; }

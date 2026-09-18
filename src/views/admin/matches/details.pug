@@ -1,0 +1,31 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    div
+      h1.page-head__title= match.title || t('match.details.title')
+      p.muted
+        = formatDate(match.matchDate) + ' · '
+        +statusBadge(match.status)
+    a.btn.btn--ghost.btn--sm(href="/admin/matches")= t('match.list.heading')
+
+  .match-actions
+    if match.status === 'DRAFT'
+      a.btn.btn--ghost(href=`/admin/matches/${match.id}/setup`)= t('match.details.editTeams')
+    if match.status === 'LIVE'
+      a.btn.btn--primary(href=`/admin/matches/${match.id}/live`)= t('match.details.goLive')
+
+  .rosters
+    each team, i in [teamA, teamB]
+      - var roster = i === 0 ? rosterA : rosterB
+      .card.roster-card
+        h3.roster-card__title= team.name
+        if roster.length === 0
+          p.muted= t('match.details.empty')
+        else
+          ul.roster-list
+            each part in roster
+              li.roster-item
+                +avatar(part.player, 'sm')
+                span= part.player.name

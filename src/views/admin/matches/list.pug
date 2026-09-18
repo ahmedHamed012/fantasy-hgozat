@@ -1,0 +1,32 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title= t('match.list.heading')
+    a.btn.btn--primary(href="/admin/matches/new")= t('match.list.new')
+
+  if matches.length === 0
+    .empty-state= t('match.list.empty')
+  else
+    .table-wrap
+      table.table
+        thead
+          tr
+            th= t('match.col.date')
+            th= t('match.col.title')
+            th= t('match.col.status')
+            th.num= t('match.col.players')
+            th.actions-col= t('match.col.actions')
+        tbody
+          each m in matches
+            tr
+              td= formatDate(m.matchDate)
+              td= m.title || t('match.untitled')
+              td: +statusBadge(m.status)
+              td.num= m._count.participants
+              td.actions-col
+                .row-actions
+                  if m.status === 'DRAFT'
+                    a.btn.btn--ghost.btn--sm(href=`/admin/matches/${m.id}/setup`)= t('match.details.editTeams')
+                  a.btn.btn--ghost.btn--sm(href=`/admin/matches/${m.id}`)= t('match.details.title')
