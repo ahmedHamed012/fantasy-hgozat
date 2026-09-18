@@ -14,6 +14,30 @@ export interface LeaderboardRow {
   motm: number;
 }
 
+/** Minimal shape the leaderboard comparator needs. */
+export interface RankableRow {
+  points: number;
+  goals: number;
+  assists: number;
+  matches: number;
+  player: { name: string };
+}
+
+/**
+ * Leaderboard ordering: points DESC, then goals, assists, matches, then name
+ * for a stable, deterministic tie-break. Exported so it can be unit-tested and
+ * reused.
+ */
+export function compareRankRows(a: RankableRow, b: RankableRow): number {
+  return (
+    b.points - a.points ||
+    b.goals - a.goals ||
+    b.assists - a.assists ||
+    b.matches - a.matches ||
+    a.player.name.localeCompare(b.player.name)
+  );
+}
+
 /**
  * Global ranking. Career totals are aggregated live from MatchParticipant rows
  * that belong to FINISHED matches (cancelled/draft/live never count — spec §14,
@@ -65,14 +89,7 @@ export const RankingService = {
         };
       })
       .filter((r) => r.player) // guard against a missing player row
-      .sort(
-        (a, b) =>
-          b.points - a.points ||
-          b.goals - a.goals ||
-          b.assists - a.assists ||
-          b.matches - a.matches ||
-          a.player.name.localeCompare(b.player.name),
-      );
+      .sort(compareRankRows);
 
     // Dynamic, positional rank (1..n).
     return rows.map((r, i) => ({ rank: i + 1, ...r }));

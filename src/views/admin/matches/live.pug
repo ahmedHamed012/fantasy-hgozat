@@ -47,10 +47,10 @@ block content
         +playerCard(part)
 
   .live-actions
-    form(method="post", action=`/admin/matches/${match.id}/finish`, onsubmit=`return confirm(${JSON.stringify(t('live.finish.confirm'))})`)
+    form(method="post", action=`/admin/matches/${match.id}/finish`, data-confirm=t('live.finish.confirm'))
       +csrf
       button.btn.btn--primary.btn--block.btn--finish(type="submit")= t('live.finish')
-    form.live-cancel(method="post", action=`/admin/matches/${match.id}/cancel`, onsubmit=`return confirm(${JSON.stringify(t('match.cancel.confirm'))})`)
+    form.live-cancel(method="post", action=`/admin/matches/${match.id}/cancel`, data-confirm=t('match.cancel.confirm'))
       +csrf
       button.btn.btn--danger.btn--sm(type="submit")= t('match.cancel')
 

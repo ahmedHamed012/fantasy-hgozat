@@ -8,8 +8,10 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && node scripts/copy-assets.mjs",
+    "build": "tsc",
     "start": "node dist/server.js",
+    "vercel-build": "prisma generate && prisma migrate deploy",
+    "postinstall": "prisma generate",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

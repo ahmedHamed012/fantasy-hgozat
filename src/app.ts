@@ -25,10 +25,15 @@ export function createApp(): Express {
   // Behind Vercel's proxy; needed for secure cookies and correct protocol.
   app.set('trust proxy', 1);
 
-  // Views. Resolved relative to this file so it works in dev (src/) and in the
-  // compiled build (dist/), where copy-assets.mjs places the templates.
+  // Views + static assets are resolved from the project root so the same code
+  // works in dev (tsx), local production (node dist/server.js), and Vercel
+  // (where vercel.json `includeFiles` bundles src/views + src/public and the
+  // function runs with cwd = project root). Overridable via env for other hosts.
+  const viewsDir = process.env.VIEWS_DIR ?? path.join(process.cwd(), 'src', 'views');
+  const publicDir = process.env.PUBLIC_DIR ?? path.join(process.cwd(), 'src', 'public');
+
   app.set('view engine', 'pug');
-  app.set('views', path.join(__dirname, 'views'));
+  app.set('views', viewsDir);
 
   // Security headers. contentSecurityPolicy is left at Helmet's safe default;
   // the live-match client script is served as an external file (no inline JS).
@@ -39,10 +44,10 @@ export function createApp(): Express {
   app.use(express.json());
   app.use(cookieParser(config.sessionSecret));
 
-  // Static assets (css/js/images), copied to dist during build.
+  // Static assets (css/js/images).
   app.use(
     '/static',
-    express.static(path.join(__dirname, 'public'), {
+    express.static(publicDir, {
       maxAge: config.isProduction ? '7d' : 0,
     }),
   );

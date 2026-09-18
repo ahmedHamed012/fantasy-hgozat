@@ -41,7 +41,7 @@ block content
                 .row-actions
                   a.btn.btn--ghost.btn--sm(href=`/admin/players/${p.id}/edit`)= t('player.action.edit')
                   if p.isActive
-                    form(method="post", action=`/admin/players/${p.id}/deactivate`, onsubmit=`return confirm(${JSON.stringify(t('player.confirm.deactivate'))})`)
+                    form(method="post", action=`/admin/players/${p.id}/deactivate`, data-confirm=t('player.confirm.deactivate'))
                       +csrf
                       button.btn.btn--danger.btn--sm(type="submit")= t('player.action.deactivate')
                   else
