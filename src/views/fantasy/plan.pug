@@ -5,7 +5,8 @@ include ../partials/mixins
 mixin planPlayer(part)
   - var selected = selectedIds.has(part.id)
   - var isCaptain = captainId === part.id
-  .fantasy-player(class=(selected ? 'is-selected' : ''), data-id=part.id, data-price=part.player.price)
+  - var teamShort = part.teamId === teamA.id ? teamA.shortName : teamB.shortName
+  .fantasy-player(class=(selected ? 'is-selected' : ''), data-id=part.id, data-price=part.player.price, data-name=part.player.name, data-team=teamShort)
     if editable
       label.fantasy-player__pick
         input(type="checkbox", name="players", value=part.id, checked=selected, data-pick)
@@ -48,6 +49,16 @@ block content
         .fantasy-points-summary__label= t('fantasy.plan.livePoints')
         .fantasy-points-summary__value= livePoints
 
+    - var kitsA = pitchKits.filter(function(k){ return k.teamShort === teamA.shortName })
+    - var kitsB = pitchKits.filter(function(k){ return k.teamShort === teamB.shortName })
+    .pitch
+      .pitch__row
+        each k in kitsA
+          +pitchKit(k.name, k.teamShort, k.isCaptain, t('fantasy.points', { points: k.points }))
+      .pitch__row
+        each k in kitsB
+          +pitchKit(k.name, k.teamShort, k.isCaptain, t('fantasy.points', { points: k.points }))
+
   if editable
     p.muted= t('fantasy.plan.intro', { squad: squadSize, budget: budget })
     .fantasy-meter
@@ -64,6 +75,7 @@ block content
       .fantasy-meter__item
         span.fantasy-meter__label= t('fantasy.plan.remaining')
         span.fantasy-meter__value#remaining #{budget}M
+    .pitch#pitch-preview.pitch--empty(data-empty=t('fantasy.plan.emptyPitch'), data-cap-label=t('fantasy.plan.captainShort'))
     p.muted.fantasy-hint= t('fantasy.plan.pickHint')
 
   form#fantasy-form(method="post", action=`/fantasy/matches/${match.id}/plan`, data-budget=budget, data-squad=squadSize)

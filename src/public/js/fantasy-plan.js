@@ -28,6 +28,71 @@
     return null;
   }
 
+  // ---- Live pitch preview -------------------------------------------------
+  var pitch = document.getElementById('pitch-preview');
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  function buildKit(el, isCaptain) {
+    var team = (el.getAttribute('data-team') || 'A').toLowerCase();
+    var kit = document.createElement('div');
+    kit.className = 'pitch-kit pitch-kit--' + team;
+
+    var shirt = document.createElement('div');
+    shirt.className = 'pitch-kit__shirt';
+    var svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('class', 'icon');
+    svg.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS(SVGNS, 'use');
+    use.setAttribute('href', '#i-kit');
+    svg.appendChild(use);
+    shirt.appendChild(svg);
+    if (isCaptain) {
+      var cap = document.createElement('span');
+      cap.className = 'pitch-kit__cap';
+      cap.textContent = pitch.getAttribute('data-cap-label') || 'C';
+      shirt.appendChild(cap);
+    }
+    kit.appendChild(shirt);
+
+    var name = document.createElement('span');
+    name.className = 'pitch-kit__name';
+    name.textContent = el.getAttribute('data-name') || '';
+    kit.appendChild(name);
+
+    var sub = document.createElement('span');
+    sub.className = 'pitch-kit__sub';
+    sub.textContent = (el.getAttribute('data-price') || '0') + 'M';
+    kit.appendChild(sub);
+    return kit;
+  }
+
+  function renderPitch() {
+    if (!pitch) return;
+    var chosen = selectedPicks();
+    pitch.innerHTML = '';
+    if (chosen.length === 0) {
+      pitch.classList.add('pitch--empty');
+      var msg = document.createElement('p');
+      msg.className = 'pitch__empty';
+      msg.textContent = pitch.getAttribute('data-empty') || '';
+      pitch.appendChild(msg);
+      return;
+    }
+    pitch.classList.remove('pitch--empty');
+    var cap = captain();
+    var capId = cap ? cap.value : '';
+    var rows = { A: document.createElement('div'), B: document.createElement('div') };
+    rows.A.className = 'pitch__row';
+    rows.B.className = 'pitch__row';
+    chosen.forEach(function (input) {
+      var el = playerEl(input);
+      var team = (el.getAttribute('data-team') || 'A').toUpperCase();
+      (rows[team] || rows.A).appendChild(buildKit(el, input.value === capId));
+    });
+    pitch.appendChild(rows.A);
+    pitch.appendChild(rows.B);
+  }
+
   function refresh() {
     var chosen = selectedPicks();
     var count = chosen.length;
@@ -57,6 +122,8 @@
 
     var valid = count === squad && spent <= budget && !!captain();
     if (saveBtn) saveBtn.disabled = !valid;
+
+    renderPitch();
   }
 
   form.addEventListener('change', function (e) {

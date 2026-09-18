@@ -29,6 +29,17 @@ mixin achievementBadge(a)
       +icon(a.icon)
     .badge-card__name= a.name
 
+//- A single kit on the fantasy pitch. teamShort 'A'/'B' picks the colour.
+mixin pitchKit(name, teamShort, isCaptain, sub)
+  .pitch-kit(class=`pitch-kit--${(teamShort || 'a').toLowerCase()}`)
+    .pitch-kit__shirt
+      +icon('kit')
+      if isCaptain
+        span.pitch-kit__cap= t('fantasy.plan.captainShort')
+    span.pitch-kit__name= name
+    if sub
+      span.pitch-kit__sub= sub
+
 //- Player avatar: image when avatarUrl is set, otherwise an initials circle.
 mixin avatar(player, size)
   - var s = size || 'md'

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { FantasyService } from '../services/fantasyService';
+import { calculateMatchPoints } from '../services/scoringService';
 import { AppError } from '../utils/AppError';
 import { logger } from '../utils/logger';
 
@@ -44,6 +45,15 @@ export async function planForm(req: Request, res: Response): Promise<void> {
   const selectedIds = new Set((entry?.picks ?? []).map((p) => p.matchParticipantId));
   const captainId = entry?.picks.find((p) => p.isCaptain)?.matchParticipantId ?? '';
 
+  // Pitch kits for the read-only view (points per player, captain flagged).
+  const shortByTeam = new Map(match.teams.map((tm) => [tm.id, tm.shortName]));
+  const pitchKits = (entry?.picks ?? []).map((pk) => ({
+    name: pk.participant.player.name,
+    teamShort: shortByTeam.get(pk.participant.teamId) ?? 'A',
+    isCaptain: pk.isCaptain,
+    points: calculateMatchPoints(pk.participant),
+  }));
+
   res.render('fantasy/plan', {
     title: res.locals.t('fantasy.plan.title'),
     match,
@@ -58,6 +68,7 @@ export async function planForm(req: Request, res: Response): Promise<void> {
     squadSize: FantasyService.squadSize,
     livePoints: entry ? FantasyService.computePoints(entry.picks) : 0,
     finalPoints: entry?.points ?? null,
+    pitchKits,
     saved: req.query.saved === '1',
     error: null,
   });

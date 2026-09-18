@@ -288,6 +288,7 @@ export const ar: Record<string, string> = {
   'fantasy.plan.livePoints': 'النقاط المباشرة',
   'fantasy.plan.finalPoints': 'النقاط النهائية',
   'fantasy.plan.pickHint': 'اضغط على لاعب للإضافة أو الإزالة. اضغط النجمة لتعيين الكابتن.',
+  'fantasy.plan.emptyPitch': 'سيظهر اللاعبون المختارون على الملعب هنا.',
   'fantasy.plan.back': 'العودة للفانتازي',
   'fantasy.error.locked': 'بدأت المباراة؛ الخطط مقفلة.',
   'fantasy.error.count': 'اختر 5 لاعبين بالضبط.',

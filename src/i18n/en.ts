@@ -292,6 +292,7 @@ export const en: Record<string, string> = {
   'fantasy.plan.livePoints': 'Live points',
   'fantasy.plan.finalPoints': 'Final points',
   'fantasy.plan.pickHint': 'Tap a player to add or remove. Tap the star to set the captain.',
+  'fantasy.plan.emptyPitch': 'Your selected players will appear on the pitch here.',
   'fantasy.plan.back': 'Back to fantasy',
   'fantasy.error.locked': 'The match has started; plans are locked.',
   'fantasy.error.count': 'Pick exactly 5 players.',

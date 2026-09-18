@@ -754,6 +754,106 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
   border-radius: 4px; padding: 1px 6px; margin-inline-start: 6px;
 }
 
+/* ---- Fantasy: pitch view ------------------------------------------------ */
+.pitch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 8px;
+  min-height: 260px;
+  padding: 20px 12px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 40px, transparent 40px 80px),
+    linear-gradient(160deg, #0e7a37, #0b6c30);
+  overflow: hidden;
+}
+/* Field markings. */
+.pitch::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 90px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.pitch::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+}
+.pitch__row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+.pitch--empty { align-items: center; justify-content: center; }
+.pitch__empty { position: relative; z-index: 1; color: rgba(255,255,255,0.75); text-align: center; margin: 0; }
+
+.pitch-kit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 84px;
+  text-align: center;
+}
+.pitch-kit__shirt { position: relative; font-size: 2.6rem; line-height: 1; }
+.pitch-kit__shirt .icon { width: 1em; height: 1em; vertical-align: middle; }
+.pitch-kit--a .pitch-kit__shirt { color: #3b82f6; }
+.pitch-kit--b .pitch-kit__shirt { color: #f59e0b; }
+.pitch-kit__cap {
+  position: absolute;
+  top: -4px;
+  inset-inline-end: -4px;
+  background: var(--gold);
+  color: #1a1400;
+  font-size: 0.7rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0b6c30;
+}
+.pitch-kit__name {
+  margin-top: 4px;
+  background: #f4f6f8;
+  color: #14181d;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pitch-kit__sub {
+  background: var(--pitch-green-dark);
+  color: #eafff0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 0 0 4px 4px;
+}
+
 /* ---- Fantasy: read-only points summary ---------------------------------- */
 .fantasy-points-summary {
   text-align: center; padding: 16px; margin-bottom: 16px;
