@@ -1,0 +1,64 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .profile-head
+    +avatar(player, 'lg')
+    .profile-head__info
+      h1.profile-head__name= player.name
+      if player.nickname
+        p.profile-head__nick “#{player.nickname}”
+      p.profile-head__rank
+        if rank
+          span.rank-pill ##{rank}
+          span.muted= ' ' + t('profile.rank')
+        else
+          span.muted= t('profile.unranked')
+
+  .stat-grid
+    +statTile(t('profile.stat.matches'), stats.matches, '🎽')
+    +statTile(t('profile.stat.goals'), stats.goals, '⚽')
+    +statTile(t('profile.stat.assists'), stats.assists, '🎯')
+    +statTile(t('profile.stat.saves'), stats.saves, '🧤')
+    +statTile(t('profile.stat.ownGoals'), stats.ownGoals, '😬')
+    +statTile(t('profile.stat.motm'), stats.motm, '🏆')
+    +statTile(t('profile.stat.points'), stats.points, '⭐', true)
+
+  section.profile-section
+    h2.profile-section__title= t('profile.achievements.heading')
+    if achievements.length === 0
+      p.muted= t('profile.achievements.empty')
+    else
+      .badge-grid
+        each a in achievements
+          +achievementBadge(a)
+
+  section.profile-section
+    h2.profile-section__title= t('profile.recent.heading')
+    if recent.length === 0
+      p.muted= t('profile.recent.empty')
+    else
+      .table-wrap
+        table.table
+          thead
+            tr
+              th= t('profile.recent.col.date')
+              th= t('profile.recent.col.result')
+              th.num= t('profile.recent.col.goals')
+              th.num= t('profile.recent.col.assists')
+              th.num= t('profile.recent.col.saves')
+              th.num= t('profile.recent.col.points')
+          tbody
+            each m in recent
+              tr
+                td
+                  a.link(href=`/admin/matches/${m.matchId}/result`)= formatDate(m.matchDate)
+                td
+                  span.outcome(class=`outcome--${m.outcome.toLowerCase()}`)= t('profile.outcome.' + m.outcome)
+                  span.result-score= ` ${m.scoreFor}–${m.scoreAgainst}`
+                  if m.isMotm
+                    |  🏆
+                td.num= m.goals
+                td.num= m.assists
+                td.num= m.saves
+                td.num.result-points= m.points

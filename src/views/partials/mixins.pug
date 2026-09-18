@@ -9,6 +9,19 @@ mixin csrf
 mixin statusBadge(status)
   span.status-badge(class=`status-badge--${status.toLowerCase()}`)= t('match.status.' + status)
 
+//- Stat tile for profile/dashboard summaries.
+mixin statTile(label, value, icon, highlight)
+  .stat-tile(class=(highlight ? 'stat-tile--primary' : ''))
+    .stat-tile__icon(aria-hidden="true")= icon
+    .stat-tile__value= value
+    .stat-tile__label= label
+
+//- Achievement badge card. `a` = { icon, name, description }.
+mixin achievementBadge(a)
+  .badge-card(title=a.description)
+    .badge-card__icon(aria-hidden="true")= a.icon
+    .badge-card__name= a.name
+
 //- Player avatar: image when avatarUrl is set, otherwise an initials circle.
 mixin avatar(player, size)
   - var s = size || 'md'

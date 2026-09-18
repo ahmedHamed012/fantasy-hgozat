@@ -3,6 +3,7 @@ import * as homeController from '../controllers/homeController';
 import { setLanguage } from '../middleware/locale';
 import { authRouter } from './auth';
 import { adminRouter } from './admin';
+import { publicRouter } from './public';
 
 /**
  * Root router. As the app grows, feature routers (auth, players, matches,
@@ -18,5 +19,6 @@ router.get('/health', homeController.health);
 router.get('/lang/:locale', setLanguage);
 
 // Feature routers.
+router.use('/', publicRouter);
 router.use('/auth', authRouter);
 router.use('/admin', adminRouter);

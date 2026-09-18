@@ -1,0 +1,43 @@
+extends layouts/base
+include partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title 🏆 #{t('leaderboard.heading')}
+
+  if rows.length === 0
+    .empty-state= t('leaderboard.empty')
+  else
+    .table-wrap
+      table.table.leaderboard-table
+        thead
+          tr
+            th.num= t('leaderboard.col.rank')
+            th= t('leaderboard.col.player')
+            th.num(title=t('leaderboard.col.matches.full'))= t('leaderboard.col.matches')
+            th.num= t('leaderboard.col.goals')
+            th.num= t('leaderboard.col.assists')
+            th.num= t('leaderboard.col.saves')
+            th.num= t('leaderboard.col.og')
+            th.num= t('leaderboard.col.motm')
+            th.num= t('leaderboard.col.points')
+        tbody
+          each row in rows
+            - var medal = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : null
+            tr(class=(row.rank <= 3 ? 'is-podium' : ''))
+              td.num.rank-cell
+                if medal
+                  span.rank-medal= medal
+                else
+                  = row.rank
+              td
+                a.player-cell.player-cell--link(href=`/players/${row.player.id}`)
+                  +avatar(row.player, 'sm')
+                  span.player-cell__name= row.player.name
+              td.num= row.matches
+              td.num= row.goals
+              td.num= row.assists
+              td.num= row.saves
+              td.num= row.ownGoals
+              td.num= row.motm
+              td.num.leaderboard-points= row.points
