@@ -9,3 +9,5 @@ block content
   .card
     p= t('admin.dashboard.welcome', { email: currentUser.email })
     p.muted= t('admin.dashboard.placeholder')
+    .dashboard-links
+      a.btn.btn--primary(href="/admin/players")= t('admin.nav.players')

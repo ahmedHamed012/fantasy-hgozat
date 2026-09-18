@@ -1,0 +1,50 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title= t('player.list.heading')
+    a.btn.btn--primary(href="/admin/players/new")= t('player.list.add')
+
+  .toolbar
+    .filter-tabs
+      a.filter-tab(href="/admin/players?status=all", class=(status === 'all' ? 'is-active' : ''))= t('player.filter.all')
+      a.filter-tab(href="/admin/players?status=active", class=(status === 'active' ? 'is-active' : ''))= t('player.filter.active')
+      a.filter-tab(href="/admin/players?status=inactive", class=(status === 'inactive' ? 'is-active' : ''))= t('player.filter.inactive')
+    span.muted= t('player.list.count', { count: players.length })
+
+  if players.length === 0
+    .empty-state= t('player.list.empty')
+  else
+    .table-wrap
+      table.table
+        thead
+          tr
+            th= t('player.col.player')
+            th= t('player.col.nickname')
+            th= t('player.col.status')
+            th.actions-col= t('player.col.actions')
+        tbody
+          each p in players
+            tr
+              td
+                .player-cell
+                  +avatar(p, 'sm')
+                  span.player-cell__name= p.name
+              td= p.nickname || '—'
+              td
+                if p.isActive
+                  span.badge.badge--active= t('player.status.active')
+                else
+                  span.badge.badge--inactive= t('player.status.inactive')
+              td.actions-col
+                .row-actions
+                  a.btn.btn--ghost.btn--sm(href=`/admin/players/${p.id}/edit`)= t('player.action.edit')
+                  if p.isActive
+                    form(method="post", action=`/admin/players/${p.id}/deactivate`, onsubmit=`return confirm(${JSON.stringify(t('player.confirm.deactivate'))})`)
+                      +csrf
+                      button.btn.btn--danger.btn--sm(type="submit")= t('player.action.deactivate')
+                  else
+                    form(method="post", action=`/admin/players/${p.id}/activate`)
+                      +csrf
+                      button.btn.btn--ghost.btn--sm(type="submit")= t('player.action.activate')

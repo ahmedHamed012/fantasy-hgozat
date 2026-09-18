@@ -1,0 +1,15 @@
+//- Reusable Pug mixins. res.locals (t, csrfToken, ...) are in scope wherever
+//- these are called.
+
+//- Hidden CSRF field for any POST form.
+mixin csrf
+  input(type="hidden", name="_csrf", value=csrfToken)
+
+//- Player avatar: image when avatarUrl is set, otherwise an initials circle.
+mixin avatar(player, size)
+  - var s = size || 'md'
+  if player.avatarUrl
+    img.avatar(class=`avatar--${s}`, src=player.avatarUrl, alt=player.name, loading="lazy")
+  else
+    - var initial = (player.name || '?').trim().charAt(0).toUpperCase()
+    span.avatar.avatar--initials(class=`avatar--${s}`, aria-hidden="true")= initial

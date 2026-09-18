@@ -1,0 +1,57 @@
+extends ../../layouts/base
+include ../../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title
+      if mode === 'edit'
+        = t('player.edit.heading')
+      else
+        = t('player.new.heading')
+
+  .card.form-card
+    form(method="post", action=action)
+      +csrf
+      .form-group
+        label.form-label(for="name")= t('player.field.name')
+        input.form-input#name(
+          type="text",
+          name="name",
+          value=values.name,
+          required,
+          maxlength="60",
+          autocomplete="off",
+          autofocus,
+          class=(errors.name ? 'is-invalid' : '')
+        )
+        if errors.name
+          .field-error= errors.name
+      .form-group
+        label.form-label(for="nickname")= t('player.field.nickname')
+          span.form-label__hint= ' · ' + t('player.field.nickname.hint')
+        input.form-input#nickname(
+          type="text",
+          name="nickname",
+          value=values.nickname,
+          maxlength="40",
+          autocomplete="off",
+          class=(errors.nickname ? 'is-invalid' : '')
+        )
+        if errors.nickname
+          .field-error= errors.nickname
+      .form-group
+        label.form-label(for="avatarUrl")= t('player.field.avatarUrl')
+          span.form-label__hint= ' · ' + t('player.field.avatarUrl.hint')
+        input.form-input#avatarUrl(
+          type="url",
+          name="avatarUrl",
+          value=values.avatarUrl,
+          maxlength="500",
+          placeholder="https://…",
+          class=(errors.avatarUrl ? 'is-invalid' : '')
+        )
+        if errors.avatarUrl
+          .field-error= errors.avatarUrl
+      .form-actions
+        a.btn.btn--ghost(href="/admin/players")= t('player.form.cancel')
+        button.btn.btn--primary(type="submit")= t('player.form.save')
