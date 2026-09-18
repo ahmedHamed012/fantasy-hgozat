@@ -78,6 +78,7 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
   res.locals.currentPath ??= req.path;
   res.locals.currentYear ??= new Date().getFullYear();
   if (res.locals.currentUser === undefined) res.locals.currentUser = null;
+  if (res.locals.fantasyUser === undefined) res.locals.fantasyUser = null;
   res.locals.csrfToken ??= '';
 
   res.status(statusCode).render('error', {

@@ -1,0 +1,54 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .page-head
+    div
+      h1.page-head__title= t('fantasy.dashboard.heading')
+      p.muted= t('fantasy.dashboard.welcome', { name: fantasyUser.name })
+    a.btn.btn--ghost.btn--sm(href="/fantasy/leaderboard")= t('fantasy.dashboard.leaderboard')
+
+  section.profile-section
+    h2.profile-section__title= t('fantasy.dashboard.open')
+    if open.length === 0
+      p.muted= t('fantasy.dashboard.openEmpty')
+    else
+      .fantasy-cards
+        each m in open
+          .fantasy-card
+            .fantasy-card__head
+              +statusBadge(m.status)
+              span.muted= formatDate(m.matchDate)
+            h3.fantasy-card__title= m.title || t('match.untitled')
+            p.muted= t('fantasy.match.players', { count: m._count.participants })
+            if entered.has(m.id)
+              a.btn.btn--ghost.btn--sm(href=`/fantasy/matches/${m.id}/plan`)
+                +icon('star')
+                span= ' ' + t('fantasy.dashboard.editPlan')
+              span.fantasy-card__ready= t('fantasy.dashboard.entered')
+            else
+              a.btn.btn--primary.btn--sm(href=`/fantasy/matches/${m.id}/plan`)= t('fantasy.dashboard.makePlan')
+
+  section.profile-section
+    h2.profile-section__title= t('fantasy.dashboard.myEntries')
+    if entries.length === 0
+      p.muted= t('fantasy.dashboard.noEntries')
+    else
+      .table-wrap
+        table.table
+          thead
+            tr
+              th= t('match.col.date')
+              th= t('match.col.title')
+              th= t('match.col.status')
+              th.num= t('fantasy.leaderboard.col.points')
+              th.actions-col
+          tbody
+            each row in entries
+              tr
+                td= formatDate(row.entry.match.matchDate)
+                td= row.entry.match.title || t('match.untitled')
+                td: +statusBadge(row.entry.match.status)
+                td.num.leaderboard-points= row.points
+                td.actions-col
+                  a.btn.btn--ghost.btn--sm(href=`/fantasy/matches/${row.entry.matchId}/plan`)= t('fantasy.dashboard.viewPlan')

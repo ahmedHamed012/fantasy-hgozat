@@ -34,7 +34,7 @@ export function newForm(_req: Request, res: Response): void {
     title: res.locals.t('player.new.title'),
     mode: 'create',
     action: '/admin/players',
-    values: { name: '', nickname: '', avatarUrl: '' },
+    values: { name: '', nickname: '', avatarUrl: '', price: 20 },
     errors: {},
   });
 }
@@ -66,6 +66,7 @@ export async function editForm(req: Request, res: Response): Promise<void> {
       name: player.name,
       nickname: player.nickname ?? '',
       avatarUrl: player.avatarUrl ?? '',
+      price: player.price,
     },
     player,
     errors: {},

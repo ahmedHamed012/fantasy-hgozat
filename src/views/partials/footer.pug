@@ -1,5 +1,7 @@
 footer.site-footer
-  .container
+  .container.site-footer__inner
     p.site-footer__text
       +icon('ball')
       span= ' ' + t('footer.text', { year: currentYear })
+    if !currentUser && !fantasyUser
+      a.site-footer__admin(href="/auth/login")= t('nav.adminLogin')

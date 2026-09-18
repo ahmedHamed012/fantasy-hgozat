@@ -22,6 +22,7 @@ block content
           tr
             th= t('player.col.player')
             th= t('player.col.nickname')
+            th.num= t('player.col.price')
             th= t('player.col.status')
             th.actions-col= t('player.col.actions')
         tbody
@@ -32,6 +33,7 @@ block content
                   +avatar(p, 'sm')
                   span.player-cell__name= p.name
               td= p.nickname || '—'
+              td.num= t('fantasy.price', { price: p.price })
               td
                 if p.isActive
                   span.badge.badge--active= t('player.status.active')

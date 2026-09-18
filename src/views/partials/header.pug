@@ -6,11 +6,18 @@ header.site-header
       span.site-header__title= t('app.name')
     nav.site-nav
       a.site-nav__link(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')
-      if currentUser
+      a.site-nav__link(href="/fantasy", class=(currentPath && currentPath.startsWith('/fantasy') ? 'is-active' : ''))= t('nav.fantasy')
+      if fantasyUser
+        span.site-nav__user= fantasyUser.name
+        form.site-nav__logout(method="post", action="/logout")
+          input(type="hidden", name="_csrf", value=csrfToken)
+          button.site-nav__link.site-nav__logout-btn(type="submit")= t('nav.logout')
+      else if currentUser
         a.site-nav__link(href="/admin", class=(currentPath && currentPath.startsWith('/admin') ? 'is-active' : ''))= t('nav.admin')
         form.site-nav__logout(method="post", action="/auth/logout")
           input(type="hidden", name="_csrf", value=csrfToken)
           button.site-nav__link.site-nav__logout-btn(type="submit")= t('nav.logout')
       else
-        a.site-nav__link(href="/auth/login", class=(currentPath && currentPath.startsWith('/auth') ? 'is-active' : ''))= t('nav.login')
+        a.site-nav__link(href="/login", class=(currentPath === '/login' ? 'is-active' : ''))= t('nav.login')
+        a.site-nav__link.site-nav__cta(href="/register")= t('nav.register')
       a.site-nav__link.site-nav__lang(href=`/lang/${otherLocale}?next=${encodeURIComponent(currentPath)}`, aria-label="Switch language")= t('lang.switchTo')

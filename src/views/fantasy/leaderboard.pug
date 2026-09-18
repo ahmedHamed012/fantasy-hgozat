@@ -1,0 +1,32 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title
+      +icon('trophy', 'title-icon')
+      span= ' ' + t('fantasy.leaderboard.heading')
+    a.btn.btn--ghost.btn--sm(href="/fantasy")= t('fantasy.plan.back')
+
+  if rows.length === 0
+    .empty-state= t('fantasy.leaderboard.empty')
+  else
+    .table-wrap
+      table.table.leaderboard-table
+        thead
+          tr
+            th.num= t('fantasy.leaderboard.col.rank')
+            th= t('fantasy.leaderboard.col.user')
+            th.num= t('fantasy.leaderboard.col.entries')
+            th.num= t('fantasy.leaderboard.col.points')
+        tbody
+          each row in rows
+            tr(class=(row.rank <= 3 ? 'is-podium' : ''))
+              td.num.rank-cell
+                if row.rank <= 3
+                  +icon('medal', `rank-medal rank-medal--${row.rank}`)
+                else
+                  = row.rank
+              td.player-cell__name= row.user.displayName
+              td.num= row.entries
+              td.num.leaderboard-points= row.points

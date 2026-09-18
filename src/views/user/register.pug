@@ -1,0 +1,30 @@
+extends ../layouts/base
+
+block content
+  .auth-wrap
+    .card.auth-card
+      h1.auth-card__title= t('user.register.heading')
+      p.muted= t('user.register.subtitle')
+      form.auth-form(method="post", action="/register")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        if next
+          input(type="hidden", name="next", value=next)
+        .form-group
+          label.form-label(for="displayName")= t('user.field.name')
+          input.form-input#displayName(type="text", name="displayName", value=values.displayName, maxlength="40", required, autofocus, class=(errors.displayName ? 'is-invalid' : ''))
+          if errors.displayName
+            .field-error= errors.displayName
+        .form-group
+          label.form-label(for="email")= t('user.field.email')
+          input.form-input#email(type="email", name="email", value=values.email, required, autocomplete="username", class=(errors.email ? 'is-invalid' : ''))
+          if errors.email
+            .field-error= errors.email
+        .form-group
+          label.form-label(for="password")= t('user.field.password')
+          input.form-input#password(type="password", name="password", required, autocomplete="new-password", minlength="8", class=(errors.password ? 'is-invalid' : ''))
+          if errors.password
+            .field-error= errors.password
+        button.btn.btn--primary.btn--block(type="submit")= t('user.register.submit')
+      p.auth-alt.muted
+        = t('user.register.haveAccount') + ' '
+        a.link(href="/login")= t('user.register.login')

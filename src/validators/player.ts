@@ -20,6 +20,8 @@ export const playerSchema = z.object({
     emptyToUndefined,
     z.string().trim().url('avatarInvalid').max(500, 'avatarTooLong').optional(),
   ),
+  // Fantasy price in millions LE.
+  price: z.coerce.number({ invalid_type_error: 'priceInvalid' }).int('priceInvalid').min(1, 'priceInvalid').max(999, 'priceInvalid'),
 });
 
 export type PlayerInput = z.infer<typeof playerSchema>;

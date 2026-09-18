@@ -4,6 +4,8 @@ import { setLanguage } from '../middleware/locale';
 import { authRouter } from './auth';
 import { adminRouter } from './admin';
 import { publicRouter } from './public';
+import { userRouter } from './user';
+import { fantasyRouter } from './fantasy';
 
 /**
  * Root router. As the app grows, feature routers (auth, players, matches,
@@ -20,5 +22,7 @@ router.get('/lang/:locale', setLanguage);
 
 // Feature routers.
 router.use('/', publicRouter);
+router.use('/', userRouter);
+router.use('/fantasy', fantasyRouter);
 router.use('/auth', authRouter);
 router.use('/admin', adminRouter);

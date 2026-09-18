@@ -37,6 +37,7 @@ export const PlayerService = {
         name: input.name,
         nickname: input.nickname ?? null,
         avatarUrl: input.avatarUrl ?? null,
+        price: input.price,
       },
     });
   },
@@ -49,6 +50,7 @@ export const PlayerService = {
         name: input.name,
         nickname: input.nickname ?? null,
         avatarUrl: input.avatarUrl ?? null,
+        price: input.price,
       },
     });
   },

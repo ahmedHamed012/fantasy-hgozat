@@ -71,6 +71,8 @@ model Player {
   nickname  String?
   avatarUrl String?
   isActive  Boolean  @default(true)
+  /// Fantasy price in millions LE. Admin-set; used for the fantasy budget cap.
+  price     Int      @default(20)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -93,10 +95,11 @@ model Match {
   startedAt   DateTime?
   finishedAt  DateTime?
 
-  createdBy    User               @relation("MatchCreatedBy", fields: [createdById], references: [id])
-  teams        MatchTeam[]
-  participants MatchParticipant[]
-  events       MatchEvent[]
+  createdBy      User               @relation("MatchCreatedBy", fields: [createdById], references: [id])
+  teams          MatchTeam[]
+  participants   MatchParticipant[]
+  events         MatchEvent[]
+  fantasyEntries FantasyEntry[]
 
   @@index([status])
   @@index([matchDate])
@@ -137,10 +140,11 @@ model MatchParticipant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  match  Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  player Player       @relation(fields: [playerId], references: [id])
-  team   MatchTeam    @relation(fields: [teamId], references: [id])
-  events MatchEvent[]
+  match        Match         @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player       Player        @relation(fields: [playerId], references: [id])
+  team         MatchTeam     @relation(fields: [teamId], references: [id])
+  events       MatchEvent[]
+  fantasyPicks FantasyPick[]
 
   // A player cannot participate twice in the same match.
   @@unique([matchId, playerId])
@@ -206,4 +210,61 @@ model PlayerAchievement {
   @@index([playerId])
   @@index([achievementId])
   @@map("player_achievements")
+}
+
+// ---------------------------------------------------------------------------
+// Fantasy game
+// ---------------------------------------------------------------------------
+
+/// A registered fantasy player (distinct from admin Users and from football
+/// Players). Self-registers with email + password.
+model FantasyUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  entries FantasyEntry[]
+
+  @@map("fantasy_users")
+}
+
+/// A user's fantasy plan for a single match: 5 picks + a captain, scored once
+/// the match is finished. One plan per user per match.
+model FantasyEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  matchId   String
+  /// Final fantasy points, set when the match is finished (null until then).
+  points    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  FantasyUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match Match         @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  picks FantasyPick[]
+
+  @@unique([userId, matchId])
+  @@index([matchId])
+  @@index([userId])
+  @@map("fantasy_entries")
+}
+
+/// One of the 5 players in a fantasy entry, referencing the player's
+/// participation in that match. Exactly one pick per entry is the captain.
+model FantasyPick {
+  id                 String  @id @default(cuid())
+  entryId            String
+  matchParticipantId String
+  isCaptain          Boolean @default(false)
+
+  entry       FantasyEntry     @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  participant MatchParticipant @relation(fields: [matchParticipantId], references: [id], onDelete: Cascade)
+
+  @@unique([entryId, matchParticipantId])
+  @@index([entryId])
+  @@index([matchParticipantId])
+  @@map("fantasy_picks")
 }

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { verifySession } from '../lib/token';
+import { verifySession, verifyUserSession } from '../lib/token';
 import { config } from '../config';
 import { AppError } from '../utils/AppError';
 
@@ -42,4 +42,33 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction): v
 
   const nextParam = encodeURIComponent(req.originalUrl);
   res.redirect(`/auth/login?next=${nextParam}`);
+}
+
+/** Attaches the fantasy user (if any) from the user session cookie. */
+export function attachFantasyUser(req: Request, res: Response, next: NextFunction): void {
+  const token = req.cookies?.[config.userCookieName];
+  if (token) {
+    const payload = verifyUserSession(token);
+    if (payload) {
+      req.fantasyUser = payload;
+      res.locals.fantasyUser = { id: payload.sub, email: payload.email, name: payload.name };
+    } else {
+      res.clearCookie(config.userCookieName, { path: '/' });
+    }
+  }
+  next();
+}
+
+/** Guards fantasy routes: redirects browsers to the user login, 401 for fetch. */
+export function requireUser(req: Request, res: Response, next: NextFunction): void {
+  if (req.fantasyUser) {
+    next();
+    return;
+  }
+  const wantsJson = req.xhr || req.headers.accept?.includes('application/json');
+  if (wantsJson) {
+    next(AppError.unauthorized());
+    return;
+  }
+  res.redirect(`/login?next=${encodeURIComponent(req.originalUrl)}`);
 }

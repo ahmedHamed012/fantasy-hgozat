@@ -52,6 +52,20 @@ block content
         )
         if errors.avatarUrl
           .field-error= errors.avatarUrl
+      .form-group
+        label.form-label(for="price")= t('player.field.price')
+          span.form-label__hint= ' · ' + t('player.field.price.hint')
+        input.form-input#price(
+          type="number",
+          name="price",
+          value=values.price,
+          min="1",
+          max="999",
+          required,
+          class=(errors.price ? 'is-invalid' : '')
+        )
+        if errors.price
+          .field-error= errors.price
       .form-actions
         a.btn.btn--ghost(href="/admin/players")= t('player.form.cancel')
         button.btn.btn--primary(type="submit")= t('player.form.save')

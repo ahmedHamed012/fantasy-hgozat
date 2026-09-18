@@ -8,7 +8,7 @@ import { router } from './routes';
 import { notFound } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
 import { localeMiddleware } from './middleware/locale';
-import { attachUser } from './middleware/auth';
+import { attachUser, attachFantasyUser } from './middleware/auth';
 import { provideCsrfToken } from './lib/csrf';
 
 /**
@@ -55,8 +55,9 @@ export function createApp(): Express {
   // Locale resolution + translation helpers (res.locals.t / locale / dir).
   app.use(localeMiddleware);
 
-  // Authentication: attach the admin (if any) from the session cookie.
+  // Authentication: attach the admin and/or fantasy user from their cookies.
   app.use(attachUser);
+  app.use(attachFantasyUser);
 
   // View globals available to every template (set before CSRF so a CSRF
   // failure can never leave a template without its globals).
@@ -64,6 +65,7 @@ export function createApp(): Express {
     res.locals.currentPath = req.path;
     res.locals.currentYear = new Date().getFullYear();
     if (res.locals.currentUser === undefined) res.locals.currentUser = null;
+    if (res.locals.fantasyUser === undefined) res.locals.fantasyUser = null;
     next();
   });
 

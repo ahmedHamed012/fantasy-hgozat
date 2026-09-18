@@ -39,3 +39,35 @@ export function verifySession(token: string): SessionPayload | null {
     return null;
   }
 }
+
+/** Session payload for a fantasy user (distinct from admin sessions). */
+export interface UserSessionPayload {
+  sub: string; // fantasy user id
+  email: string;
+  name: string;
+  kind: 'user';
+}
+
+export function signUserSession(payload: Omit<UserSessionPayload, 'kind'>): string {
+  return jwt.sign({ ...payload, kind: 'user' }, config.sessionSecret, { expiresIn: EXPIRES_IN });
+}
+
+export function verifyUserSession(token: string): UserSessionPayload | null {
+  try {
+    const decoded = jwt.verify(token, config.sessionSecret);
+    if (
+      typeof decoded === 'object' &&
+      decoded !== null &&
+      (decoded as Record<string, unknown>).kind === 'user' &&
+      typeof decoded.sub === 'string' &&
+      typeof (decoded as Record<string, unknown>).email === 'string' &&
+      typeof (decoded as Record<string, unknown>).name === 'string'
+    ) {
+      const d = decoded as unknown as UserSessionPayload;
+      return { sub: d.sub, email: d.email, name: d.name, kind: 'user' };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}

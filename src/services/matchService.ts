@@ -4,6 +4,7 @@ import { AppError } from '../utils/AppError';
 import type { CreateMatchInput } from '../validators/match';
 import { determineManOfTheMatch } from './scoringService';
 import { AchievementService } from './achievementService';
+import { FantasyService } from './fantasyService';
 
 /** Default two-team setup for a standard match (kept data-driven, not hardcoded
  *  to exactly 10 players — team sizes are validated in the UI, not the DB). */
@@ -164,6 +165,8 @@ export const MatchService = {
       for (const part of match.participants) {
         await AchievementService.evaluateForParticipant(tx, part, id, idByCode);
       }
+      // Finalize fantasy points for every entry on this match.
+      await FantasyService.scoreEntriesForMatch(tx, id);
     });
 
     return this.getWithParticipants(id);

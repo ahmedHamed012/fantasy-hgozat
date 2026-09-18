@@ -1,0 +1,87 @@
+extends ../layouts/base
+include ../partials/mixins
+
+//- One selectable player in the builder (or a static row when read-only).
+mixin planPlayer(part)
+  - var selected = selectedIds.has(part.id)
+  - var isCaptain = captainId === part.id
+  .fantasy-player(class=(selected ? 'is-selected' : ''), data-id=part.id, data-price=part.player.price)
+    if editable
+      label.fantasy-player__pick
+        input(type="checkbox", name="players", value=part.id, checked=selected, data-pick)
+        +avatar(part.player, 'sm')
+        span.fantasy-player__name= part.player.name
+        span.fantasy-player__price= t('fantasy.price', { price: part.player.price })
+      label.fantasy-player__cap(class=(isCaptain ? 'is-captain' : ''), title=t('fantasy.plan.makeCaptain'))
+        input(type="radio", name="captain", value=part.id, checked=isCaptain, data-cap)
+        +icon('star')
+    else
+      .fantasy-player__pick.fantasy-player__pick--static(class=(selected ? '' : 'is-dim'))
+        +avatar(part.player, 'sm')
+        span.fantasy-player__name= part.player.name
+        span.fantasy-player__price= t('fantasy.price', { price: part.player.price })
+        if isCaptain
+          span.fantasy-player__cbadge= t('fantasy.plan.captainShort')
+
+block content
+  .page-head
+    div
+      h1.page-head__title= t('fantasy.plan.heading')
+      p.muted
+        = (match.title || t('match.untitled')) + ' · ' + formatDate(match.matchDate) + ' · '
+        +statusBadge(match.status)
+    a.btn.btn--ghost.btn--sm(href="/fantasy")= t('fantasy.plan.back')
+
+  if saved
+    .alert.alert--success= t('fantasy.plan.saved')
+  if error
+    .alert.alert--error= error
+  if !editable
+    .alert.alert--info= t('fantasy.plan.locked')
+
+  if !editable
+    .fantasy-points-summary
+      if finalPoints !== null
+        .fantasy-points-summary__label= t('fantasy.plan.finalPoints')
+        .fantasy-points-summary__value= finalPoints
+      else
+        .fantasy-points-summary__label= t('fantasy.plan.livePoints')
+        .fantasy-points-summary__value= livePoints
+
+  if editable
+    p.muted= t('fantasy.plan.intro', { squad: squadSize, budget: budget })
+    .fantasy-meter
+      .fantasy-meter__item
+        span.fantasy-meter__label= t('fantasy.plan.squad')
+        span.fantasy-meter__value
+          span#count 0
+          |  / #{squadSize}
+      .fantasy-meter__item
+        span.fantasy-meter__label= t('fantasy.plan.spent')
+        span.fantasy-meter__value
+          span#spent 0
+          |  / #{budget}M
+      .fantasy-meter__item
+        span.fantasy-meter__label= t('fantasy.plan.remaining')
+        span.fantasy-meter__value#remaining #{budget}M
+    p.muted.fantasy-hint= t('fantasy.plan.pickHint')
+
+  form#fantasy-form(method="post", action=`/fantasy/matches/${match.id}/plan`, data-budget=budget, data-squad=squadSize)
+    if editable
+      input(type="hidden", name="_csrf", value=csrfToken)
+    .fantasy-columns
+      .fantasy-column
+        h3.fantasy-column__title= teamA.name
+        each part in rosterA
+          +planPlayer(part)
+      .fantasy-column
+        h3.fantasy-column__title= teamB.name
+        each part in rosterB
+          +planPlayer(part)
+    if editable
+      .form-actions.form-actions--split
+        button.btn.btn--primary.btn--block#save-plan(type="submit")= t('fantasy.plan.save')
+
+block scripts
+  if editable
+    script(src="/static/js/fantasy-plan.js", defer)
