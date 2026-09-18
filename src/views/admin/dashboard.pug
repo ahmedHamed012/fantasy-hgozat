@@ -1,0 +1,11 @@
+extends ../layouts/base
+
+block content
+  .page-head
+    h1.page-head__title= t('admin.dashboard.heading')
+    form(method="post", action="/auth/logout")
+      input(type="hidden", name="_csrf", value=csrfToken)
+      button.btn.btn--ghost.btn--sm(type="submit")= t('nav.logout')
+  .card
+    p= t('admin.dashboard.welcome', { email: currentUser.email })
+    p.muted= t('admin.dashboard.placeholder')

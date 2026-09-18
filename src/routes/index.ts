@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import * as homeController from '../controllers/homeController';
 import { setLanguage } from '../middleware/locale';
+import { authRouter } from './auth';
+import { adminRouter } from './admin';
 
 /**
  * Root router. As the app grows, feature routers (auth, players, matches,
@@ -14,3 +16,7 @@ router.get('/health', homeController.health);
 
 // Language switch (persists a `lang` cookie, then redirects back).
 router.get('/lang/:locale', setLanguage);
+
+// Feature routers.
+router.use('/auth', authRouter);
+router.use('/admin', adminRouter);

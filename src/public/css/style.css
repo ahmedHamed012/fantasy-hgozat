@@ -244,6 +244,21 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 .text-center { text-align: center; }
 .empty-state { text-align: center; color: var(--text-muted); padding: 48px 16px; }
 
+/* ---- Auth --------------------------------------------------------------- */
+.auth-wrap { max-width: 420px; margin: 40px auto; }
+.auth-card__title { font-size: 1.5rem; margin-bottom: 4px; }
+.auth-form { margin-top: 20px; }
+
+/* Logout button styled to sit inline in the nav like a link. */
+.site-nav__logout { margin: 0; display: inline; }
+.site-nav__logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
 /* ---- Error page --------------------------------------------------------- */
 .error-page { text-align: center; padding: 64px 0; }
 .error-page__code { font-size: 4rem; font-weight: 800; color: var(--pitch-green); }

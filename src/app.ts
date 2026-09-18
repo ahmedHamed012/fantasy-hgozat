@@ -8,6 +8,8 @@ import { router } from './routes';
 import { notFound } from './middleware/notFound';
 import { errorHandler } from './middleware/errorHandler';
 import { localeMiddleware } from './middleware/locale';
+import { attachUser } from './middleware/auth';
+import { provideCsrfToken } from './lib/csrf';
 
 /**
  * Builds and configures the Express application.
@@ -48,13 +50,20 @@ export function createApp(): Express {
   // Locale resolution + translation helpers (res.locals.t / locale / dir).
   app.use(localeMiddleware);
 
-  // View globals available to every template.
+  // Authentication: attach the admin (if any) from the session cookie.
+  app.use(attachUser);
+
+  // View globals available to every template (set before CSRF so a CSRF
+  // failure can never leave a template without its globals).
   app.use((req, res, next) => {
     res.locals.currentPath = req.path;
     res.locals.currentYear = new Date().getFullYear();
-    res.locals.currentUser = null; // populated once auth lands (Phase 3)
+    if (res.locals.currentUser === undefined) res.locals.currentUser = null;
     next();
   });
+
+  // Expose a CSRF token to views on safe requests.
+  app.use(provideCsrfToken);
 
   app.use('/', router);
 

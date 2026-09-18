@@ -1,0 +1,31 @@
+extends ../layouts/base
+
+block content
+  .auth-wrap
+    .card.auth-card
+      h1.auth-card__title= t('auth.login.heading')
+      p.muted= t('auth.login.subtitle')
+      if error
+        .alert.alert--error= error
+      form.auth-form(method="post", action="/auth/login")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        if next
+          input(type="hidden", name="next", value=next)
+        .form-group
+          label.form-label(for="email")= t('auth.login.email')
+          input.form-input#email(
+            type="email",
+            name="email",
+            required,
+            autocomplete="username",
+            autofocus
+          )
+        .form-group
+          label.form-label(for="password")= t('auth.login.password')
+          input.form-input#password(
+            type="password",
+            name="password",
+            required,
+            autocomplete="current-password"
+          )
+        button.btn.btn--primary.btn--block(type="submit")= t('auth.login.submit')

@@ -33,6 +33,23 @@ export const en: Record<string, string> = {
   'home.feature.badges.title': 'Badges',
   'home.feature.badges.text': 'Hat tricks, walls, playmakers — achievements unlock as players perform.',
 
+  // Auth
+  'auth.login.title': 'Admin login',
+  'auth.login.heading': 'Admin login',
+  'auth.login.subtitle': 'Sign in to manage players and matches.',
+  'auth.login.email': 'Email',
+  'auth.login.password': 'Password',
+  'auth.login.submit': 'Log in',
+  'auth.error.invalidInput': 'Please enter a valid email and password.',
+  'auth.error.invalidCredentials': 'Invalid email or password.',
+
+  // Admin
+  'admin.dashboard.title': 'Dashboard',
+  'admin.dashboard.heading': 'Admin dashboard',
+  'admin.dashboard.welcome': 'Welcome, {email}.',
+  'admin.dashboard.placeholder':
+    'Player management, match creation and the live match screen arrive in the next phases.',
+
   // Errors
   'error.back': 'Back to home',
 };

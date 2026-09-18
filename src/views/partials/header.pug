@@ -7,7 +7,9 @@ header.site-header
       a.site-nav__link(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')
       if currentUser
         a.site-nav__link(href="/admin", class=(currentPath && currentPath.startsWith('/admin') ? 'is-active' : ''))= t('nav.admin')
-        a.site-nav__link(href="/auth/logout")= t('nav.logout')
+        form.site-nav__logout(method="post", action="/auth/logout")
+          input(type="hidden", name="_csrf", value=csrfToken)
+          button.site-nav__link.site-nav__logout-btn(type="submit")= t('nav.logout')
       else
         a.site-nav__link(href="/auth/login", class=(currentPath && currentPath.startsWith('/auth') ? 'is-active' : ''))= t('nav.login')
       a.site-nav__link.site-nav__lang(href=`/lang/${otherLocale}?next=${encodeURIComponent(currentPath)}`, aria-label="Switch language")= t('lang.switchTo')
