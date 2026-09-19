@@ -226,9 +226,43 @@ model FantasyUser {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  entries FantasyEntry[]
+  entries           FantasyEntry[]
+  ownedLeagues      FantasyLeague[]       @relation("LeagueOwner")
+  leagueMemberships FantasyLeagueMember[]
 
   @@map("fantasy_users")
+}
+
+/// A private mini-league. Members join with the shareable `code`; standings
+/// rank members by their total fantasy points.
+model FantasyLeague {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  owner   FantasyUser           @relation("LeagueOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members FantasyLeagueMember[]
+
+  @@index([ownerId])
+  @@map("fantasy_leagues")
+}
+
+/// Membership of a fantasy user in a league (the creator is a member too).
+model FantasyLeagueMember {
+  id       String   @id @default(cuid())
+  leagueId String
+  userId   String
+  joinedAt DateTime @default(now())
+
+  league FantasyLeague @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  user   FantasyUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([leagueId, userId])
+  @@index([userId])
+  @@index([leagueId])
+  @@map("fantasy_league_members")
 }
 
 /// A user's fantasy plan for a single match: 5 picks + a captain, scored once

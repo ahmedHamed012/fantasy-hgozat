@@ -5,8 +5,8 @@ header.site-header
         +icon('ball')
       span.site-header__title= t('app.name')
     nav.site-nav
-      a.site-nav__link(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')
-      a.site-nav__link(href="/fantasy", class=(currentPath && currentPath.startsWith('/fantasy') ? 'is-active' : ''))= t('nav.fantasy')
+      a.site-nav__link.site-nav__primary(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')
+      a.site-nav__link.site-nav__primary(href="/fantasy", class=(currentPath && currentPath.startsWith('/fantasy') ? 'is-active' : ''))= t('nav.fantasy')
       if fantasyUser
         span.site-nav__user= fantasyUser.name
         form.site-nav__logout(method="post", action="/logout")

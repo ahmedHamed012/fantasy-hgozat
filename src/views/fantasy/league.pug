@@ -1,0 +1,51 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .page-head
+    div
+      h1.page-head__title= league.name
+      p.muted= t('league.members', { count: rows.length })
+    a.btn.btn--ghost.btn--sm(href="/fantasy/leagues")= t('league.back')
+
+  if error
+    .alert.alert--error= error
+
+  .card.league-share
+    span.muted= t('league.code.share')
+    span.league-code.league-code--lg= league.code
+
+  .table-wrap
+    table.table.leaderboard-table
+      thead
+        tr
+          th.num= t('league.col.rank')
+          th= t('league.col.user')
+          th.num= t('league.col.entries')
+          th.num= t('league.col.points')
+      tbody
+        each row in rows
+          tr(class=[(row.rank <= 3 ? 'is-podium' : ''), (fantasyUser && row.user.id === fantasyUser.id ? 'is-me' : '')].filter(Boolean).join(' '))
+            td.num.rank-cell
+              if row.rank <= 3
+                +icon('medal', `rank-medal rank-medal--${row.rank}`)
+              else
+                = row.rank
+            td
+              span.player-cell__name= row.user.displayName
+              if fantasyUser && row.user.id === fantasyUser.id
+                span.you-tag= t('league.you')
+              if row.isOwner
+                span.badge.badge--active.league-owner-tag= t('league.owner')
+            td.num= row.entries
+            td.num.leaderboard-points= row.points
+
+  .league-actions
+    if isOwner
+      form(method="post", action=`/fantasy/leagues/${league.id}/delete`, data-confirm=t('league.delete.confirm'))
+        +csrf
+        button.btn.btn--danger.btn--sm(type="submit")= t('league.delete')
+    else
+      form(method="post", action=`/fantasy/leagues/${league.id}/leave`, data-confirm=t('league.leave.confirm'))
+        +csrf
+        button.btn.btn--danger.btn--sm(type="submit")= t('league.leave')

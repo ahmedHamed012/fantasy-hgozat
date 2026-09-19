@@ -14,6 +14,7 @@ import { AuthService } from '../src/services/authService';
 import { AchievementService } from '../src/services/achievementService';
 import { MatchService } from '../src/services/matchService';
 import { FantasyService } from '../src/services/fantasyService';
+import { FantasyLeagueService } from '../src/services/fantasyLeagueService';
 import { hashPassword } from '../src/lib/password';
 
 // name -> fantasy price (millions LE); cheapest 5 = 88M, so budget bites.
@@ -144,6 +145,27 @@ async function main() {
   });
   await prisma.fantasyEntry.update({ where: { id: entry.id }, data: { points: FantasyService.computePoints(picks) } });
   console.log(`✓ Demo fantasy user: ${fanEmail} / ${fanPassword} (with a scored Week 1 entry)`);
+
+  // Second demo user + a shared league (so standings have >1 member).
+  const rival = await prisma.fantasyUser.create({
+    data: { email: 'rival@example.com', displayName: 'Rival', passwordHash: await hashPassword('rivalpass123') },
+  });
+  const rivalSquad = [wk1[0], wk1[1], wk1[2], wk1[3], wk1[5]]; // slightly different, within budget
+  const rivalCaptain = rivalSquad.reduce((best, p) =>
+    (p.goals * 3 + p.assists * 2 + p.saves * 2 - p.ownGoals * 2) >
+    (best.goals * 3 + best.assists * 2 + best.saves * 2 - best.ownGoals * 2) ? p : best, rivalSquad[0]);
+  const rEntry = await prisma.fantasyEntry.create({ data: { userId: rival.id, matchId: finishedIds[0] } });
+  await prisma.fantasyPick.createMany({
+    data: rivalSquad.map((p) => ({ entryId: rEntry.id, matchParticipantId: p.id, isCaptain: p.id === rivalCaptain.id })),
+  });
+  const rPicks = await prisma.fantasyPick.findMany({
+    where: { entryId: rEntry.id }, include: { participant: { include: { player: true } } },
+  });
+  await prisma.fantasyEntry.update({ where: { id: rEntry.id }, data: { points: FantasyService.computePoints(rPicks) } });
+
+  const league = await FantasyLeagueService.createLeague(fan.id, 'Friends League');
+  await FantasyLeagueService.joinByCode(rival.id, league.code);
+  console.log(`✓ Demo league "Friends League" (code ${league.code}) — fan + rival`);
 
   const badges = await prisma.playerAchievement.count();
   console.log(`✓ Seed complete — ${finished.length} finished + ${scheduled.length} scheduled matches, ${badges} badges`);

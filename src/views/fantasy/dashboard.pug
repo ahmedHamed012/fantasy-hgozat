@@ -6,7 +6,9 @@ block content
     div
       h1.page-head__title= t('fantasy.dashboard.heading')
       p.muted= t('fantasy.dashboard.welcome', { name: fantasyUser.name })
-    a.btn.btn--ghost.btn--sm(href="/fantasy/leaderboard")= t('fantasy.dashboard.leaderboard')
+    .page-head__actions
+      a.btn.btn--ghost.btn--sm(href="/fantasy/leagues")= t('nav.leagues')
+      a.btn.btn--ghost.btn--sm(href="/fantasy/leaderboard")= t('fantasy.dashboard.leaderboard')
 
   section.profile-section
     h2.profile-section__title= t('fantasy.dashboard.open')

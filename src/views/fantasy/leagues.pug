@@ -1,0 +1,46 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .page-head
+    h1.page-head__title
+      +icon('users', 'title-icon')
+      span= ' ' + t('league.heading')
+    a.btn.btn--ghost.btn--sm(href="/fantasy")= t('fantasy.plan.back')
+
+  if error
+    .alert.alert--error= error
+
+  .league-forms
+    .card
+      h2.league-form__title= t('league.create.heading')
+      form(method="post", action="/fantasy/leagues")
+        +csrf
+        .form-group
+          label.form-label(for="name")= t('league.create.name')
+          input.form-input#name(type="text", name="name", maxlength="40", required, autocomplete="off")
+        button.btn.btn--primary(type="submit")= t('league.create.submit')
+    .card
+      h2.league-form__title= t('league.join.heading')
+      form(method="post", action="/fantasy/leagues/join")
+        +csrf
+        .form-group
+          label.form-label(for="code")= t('league.join.code')
+          input.form-input.input-upper#code(type="text", name="code", maxlength="12", required, autocomplete="off", autocapitalize="characters")
+          .form-hint= t('league.join.hint')
+        button.btn.btn--ghost(type="submit")= t('league.join.submit')
+
+  section.profile-section
+    h2.profile-section__title= t('league.mine.heading')
+    if mine.length === 0
+      p.muted= t('league.mine.empty')
+    else
+      .fantasy-cards
+        each m in mine
+          a.fantasy-card.league-card(href=`/fantasy/leagues/${m.league.id}`)
+            .fantasy-card__head
+              span.league-code= m.league.code
+              if m.isOwner
+                span.badge.badge--active= t('league.owner')
+            h3.fantasy-card__title= m.league.name
+            p.muted= t('league.members', { count: m.members })

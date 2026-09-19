@@ -667,6 +667,78 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 }
 .unlocked-item__icon { font-size: 1.5rem; }
 
+/* ---- Bottom navigation (mobile) ----------------------------------------- */
+.bottom-nav { display: none; }
+@media (max-width: 768px) {
+  .site-nav__primary { display: none; }
+  body { padding-bottom: 64px; }
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: rgba(15, 18, 22, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-nav__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 2px;
+    color: var(--text-faint);
+    font-size: 0.68rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    min-height: 48px;
+    justify-content: center;
+  }
+  .bottom-nav__item .icon { width: 1.4em; height: 1.4em; }
+  .bottom-nav__item.is-active { color: var(--pitch-green-light); }
+  .bottom-nav__label { line-height: 1; }
+}
+
+/* ---- League ------------------------------------------------------------- */
+.league-forms { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.league-form__title { font-size: 1.1rem; margin-bottom: 14px; }
+.input-upper { text-transform: uppercase; letter-spacing: 2px; }
+.league-code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--pitch-green-light);
+  background: rgba(18, 176, 74, 0.1);
+  border: 1px solid rgba(18, 176, 74, 0.35);
+  padding: 2px 10px;
+  border-radius: 6px;
+}
+.league-code--lg { font-size: 1.4rem; padding: 6px 16px; }
+.league-share { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.league-card { text-decoration: none; }
+.league-card:hover { border-color: var(--pitch-green); }
+.league-actions { margin-top: 20px; }
+.you-tag {
+  background: var(--pitch-green);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  margin-inline-start: 8px;
+  vertical-align: middle;
+}
+.league-owner-tag { margin-inline-start: 8px; }
+.leaderboard-table tr.is-me { background: rgba(18, 176, 74, 0.08); }
+.page-head__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 560px) {
+  .league-forms { grid-template-columns: 1fr; }
+}
+
 /* ---- Nav user / footer admin -------------------------------------------- */
 .site-nav__user { color: var(--text); font-weight: 600; padding: 8px 6px; opacity: 0.9; }
 .site-nav__cta { background: var(--pitch-green); color: #fff; }

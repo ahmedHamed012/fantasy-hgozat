@@ -1,0 +1,9 @@
+//- Mobile bottom navigation. Rendered on every page but only visible on small
+//- screens (CSS). Items adapt to whether a fantasy user is logged in.
+- var p = currentPath || '/'
+- var items = fantasyUser ? [{ href: '/', icon: 'home', label: t('nav.home'), active: p === '/' }, { href: '/fantasy', icon: 'kit', label: t('nav.fantasy'), active: p === '/fantasy' || p.indexOf('/fantasy/matches') === 0 }, { href: '/fantasy/leagues', icon: 'users', label: t('nav.leagues'), active: p.indexOf('/fantasy/leagues') === 0 }, { href: '/fantasy/leaderboard', icon: 'medal', label: t('nav.standings'), active: p.indexOf('/fantasy/leaderboard') === 0 }, { href: '/leaderboard', icon: 'trophy', label: t('nav.leaderboard'), active: p.indexOf('/leaderboard') === 0 }] : [{ href: '/', icon: 'home', label: t('nav.home'), active: p === '/' }, { href: '/leaderboard', icon: 'trophy', label: t('nav.leaderboard'), active: p.indexOf('/leaderboard') === 0 }, { href: '/fantasy', icon: 'kit', label: t('nav.fantasy'), active: p.indexOf('/fantasy') === 0 }]
+nav.bottom-nav(aria-label="Primary")
+  each it in items
+    a.bottom-nav__item(href=it.href, class=(it.active ? 'is-active' : ''))
+      +icon(it.icon)
+      span.bottom-nav__label= it.label
