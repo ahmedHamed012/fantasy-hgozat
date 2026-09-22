@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs';
 import express, { type Express } from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -19,18 +20,38 @@ import { provideCsrfToken } from './lib/csrf';
  * handler on Vercel. No in-memory state, timers, sockets, or filesystem writes
  * are introduced — everything persistent lives in PostgreSQL.
  */
+/** Returns the first existing directory for a bundled asset folder (views/public). */
+function resolveAssetDir(sub: string): string {
+  const candidates = [
+    path.join(__dirname, sub), // compiled app sits next to src/views + src/public
+    path.join(process.cwd(), 'src', sub),
+    path.join(process.cwd(), sub),
+  ];
+  for (const candidate of candidates) {
+    try {
+      if (fs.existsSync(candidate)) return candidate;
+    } catch {
+      /* ignore and try the next candidate */
+    }
+  }
+  return candidates[0];
+}
+
 export function createApp(): Express {
   const app = express();
 
   // Behind Vercel's proxy; needed for secure cookies and correct protocol.
   app.set('trust proxy', 1);
 
-  // Views + static assets are resolved from the project root so the same code
-  // works in dev (tsx), local production (node dist/server.js), and Vercel
-  // (where vercel.json `includeFiles` bundles src/views + src/public and the
-  // function runs with cwd = project root). Overridable via env for other hosts.
-  const viewsDir = process.env.VIEWS_DIR ?? path.join(process.cwd(), 'src', 'views');
-  const publicDir = process.env.PUBLIC_DIR ?? path.join(process.cwd(), 'src', 'public');
+  // Resolve views + static assets from the first candidate that exists. This
+  // works across every environment without configuration:
+  //   - dev (tsx):            __dirname = src/            -> src/<sub>
+  //   - Vercel (@vercel/node): __dirname = /var/task/src/ -> /var/task/src/<sub>
+  //   - local prod (dist):    __dirname = dist/ (no assets) -> falls back to
+  //                            <cwd>/src/<sub>
+  // Overridable via VIEWS_DIR / PUBLIC_DIR for other hosts.
+  const viewsDir = process.env.VIEWS_DIR ?? resolveAssetDir('views');
+  const publicDir = process.env.PUBLIC_DIR ?? resolveAssetDir('public');
 
   app.set('view engine', 'pug');
   app.set('views', viewsDir);

@@ -152,20 +152,21 @@ Preview if you want branch deploys to work):
 | `ADMIN_PASSWORD` | your admin password                                      |
 | `NODE_ENV`       | `production`                                             |
 
-**4. Deploy.** Click **Deploy**. On each build Vercel runs
-`npm run vercel-build` → `prisma generate && prisma migrate deploy`, which
-applies the committed migrations to your Supabase database (schema comes from
-the migration history, never manual edits).
+**4. Deploy.** Click **Deploy**. Vercel installs dependencies (the `postinstall`
+script runs `prisma generate` automatically) and bundles the app as a single
+serverless function from `api/index.ts`.
 
-**5. Create the admin + seed (first deploy only).** Migrations create the
-tables but not the admin user. From your machine (with the same `.env` pointing
-at the production DB), run **one** of:
+**5. Apply migrations + create the admin (first deploy).** From your machine,
+with `.env` pointing at the production Supabase database, run:
 
 ```bash
-npm run create-admin     # just the admin
-# or
-npm run db:seed          # admin + demo players/matches/fantasy data
+npx prisma migrate deploy   # create/update the tables from prisma/migrations
+npm run create-admin        # create the admin (or: npm run db:seed for demo data)
 ```
+
+> Migrations are applied with this one command rather than during the Vercel
+> build — running them from the build is flaky on serverless, and Supabase's
+> direct connection (`DIRECT_URL`) is what Prisma Migrate needs.
 
 ### Updating and redeploying (the easy part)
 
@@ -179,14 +180,13 @@ git push
 
 Every push to `main` triggers a fresh production deploy automatically; pushes to
 other branches / pull requests get their own **preview URL**. If you changed the
-Prisma schema, add a migration before pushing so it deploys with the code:
+Prisma schema, create the migration and apply it to the production DB, then push:
 
 ```bash
-npx prisma migrate dev --name your_change   # creates prisma/migrations/*
+npx prisma migrate dev --name your_change    # create + apply locally
+npx prisma migrate deploy                    # apply to the production DB
 git add -A && git commit -m "..." && git push
 ```
-
-The committed migration is applied automatically during the Vercel build.
 
 ### Applying migrations manually (optional)
 
