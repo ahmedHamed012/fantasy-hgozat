@@ -734,6 +734,28 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 }
 .league-owner-tag { margin-inline-start: 8px; }
 .leaderboard-table tr.is-me { background: rgba(18, 176, 74, 0.08); }
+
+/* Match selector pills on the member-plan page. */
+.match-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.match-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: var(--transition);
+}
+.match-pill:hover { border-color: var(--text-faint); }
+.match-pill.is-active { border-color: var(--pitch-green); background: rgba(18, 176, 74, 0.1); }
+.match-pill__title { font-weight: 700; font-size: 0.9rem; }
+.match-pill__date { font-size: 0.72rem; color: var(--text-muted); }
+
+/* Compact the view-plan label on narrow screens (icon still shows). */
+@media (max-width: 560px) {
+  .view-plan-label { display: none; }
+}
 .page-head__actions { display: flex; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 560px) {
   .league-forms { grid-template-columns: 1fr; }

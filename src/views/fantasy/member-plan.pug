@@ -1,0 +1,34 @@
+extends ../layouts/base
+include ../partials/mixins
+
+block content
+  .page-head
+    div
+      h1.page-head__title= t('league.memberPlan.heading', { name: target.displayName })
+      p.muted= league.name
+    a.btn.btn--ghost.btn--sm(href=`/fantasy/leagues/${league.id}`)= t('league.back')
+
+  if entries.length === 0
+    .empty-state= t('league.memberPlan.noPlans')
+  else
+    //- Match selector (their visible entries, newest first).
+    .match-pills
+      each e in entries
+        a.match-pill(href=`/fantasy/leagues/${league.id}/members/${target.id}/plan?matchId=${e.matchId}`, class=(selected && e.matchId === selected.matchId ? 'is-active' : ''))
+          span.match-pill__title= e.match.title || t('match.untitled')
+          span.match-pill__date= formatDate(e.match.matchDate)
+
+    if selected
+      .fantasy-points-summary
+        .fantasy-points-summary__label= isFinal ? t('fantasy.plan.finalPoints') : t('fantasy.plan.livePoints')
+        .fantasy-points-summary__value= points
+
+      - var kitsA = pitchKits.filter(function(k){ return k.teamShort === teamA.shortName })
+      - var kitsB = pitchKits.filter(function(k){ return k.teamShort === teamB.shortName })
+      .pitch
+        .pitch__row
+          each k in kitsA
+            +pitchKit(k.name, k.teamShort, k.isCaptain, t('fantasy.points', { points: k.points }))
+        .pitch__row
+          each k in kitsB
+            +pitchKit(k.name, k.teamShort, k.isCaptain, t('fantasy.points', { points: k.points }))

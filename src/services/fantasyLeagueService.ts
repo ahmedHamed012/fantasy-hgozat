@@ -120,6 +120,51 @@ export const FantasyLeagueService = {
     await prisma.fantasyLeagueMember.deleteMany({ where: { leagueId, userId } });
   },
 
+  /**
+   * A league member's viewable plans. Only the viewer's own plans and other
+   * members' LIVE/FINISHED plans are returned (DRAFT plans stay hidden before
+   * kickoff so picks can't be copied). Returns the member, their visible
+   * entries (for a match selector) and the selected entry (picks included).
+   */
+  async getMemberPlan(viewerId: string, leagueId: string, targetUserId: string, matchId?: string) {
+    const league = await prisma.fantasyLeague.findUnique({
+      where: { id: leagueId },
+      include: { members: { select: { userId: true } } },
+    });
+    if (!league) throw AppError.notFound('League not found.');
+
+    const memberIds = league.members.map((m) => m.userId);
+    if (!memberIds.includes(viewerId)) throw AppError.forbidden('You are not a member of this league.');
+    if (!memberIds.includes(targetUserId)) throw AppError.notFound('Player is not in this league.');
+
+    const target = await prisma.fantasyUser.findUnique({
+      where: { id: targetUserId },
+      select: { id: true, displayName: true },
+    });
+    if (!target) throw AppError.notFound('Player not found.');
+
+    // Own plans: any locked status; others: only LIVE/FINISHED (post-kickoff).
+    const statuses = ['LIVE', 'FINISHED'] as const;
+    const entries = await prisma.fantasyEntry.findMany({
+      where: { userId: targetUserId, match: { status: { in: [...statuses] } } },
+      orderBy: { match: { matchDate: 'desc' } },
+      include: {
+        match: { include: { teams: { orderBy: { shortName: 'asc' } } } },
+        picks: { include: { participant: { include: { player: true } } } },
+      },
+    });
+
+    let selected = matchId ? entries.find((e) => e.matchId === matchId) ?? null : null;
+    if (!selected) selected = entries[0] ?? null;
+
+    return {
+      league: { id: league.id, name: league.name },
+      target,
+      entries,
+      selected,
+    };
+  },
+
   async deleteLeague(userId: string, leagueId: string): Promise<void> {
     const league = await prisma.fantasyLeague.findUnique({ where: { id: leagueId } });
     if (!league) throw AppError.notFound('League not found.');

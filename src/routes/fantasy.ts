@@ -27,5 +27,6 @@ fantasyRouter.get('/leagues', asyncHandler(league.leagues));
 fantasyRouter.post('/leagues', doubleCsrfProtection, asyncHandler(league.createLeague));
 fantasyRouter.post('/leagues/join', doubleCsrfProtection, asyncHandler(league.joinLeague));
 fantasyRouter.get('/leagues/:id', asyncHandler(league.standings));
+fantasyRouter.get('/leagues/:id/members/:userId/plan', asyncHandler(league.memberPlan));
 fantasyRouter.post('/leagues/:id/leave', doubleCsrfProtection, asyncHandler(league.leaveLeague));
 fantasyRouter.post('/leagues/:id/delete', doubleCsrfProtection, asyncHandler(league.deleteLeague));

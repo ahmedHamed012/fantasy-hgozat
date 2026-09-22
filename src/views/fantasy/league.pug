@@ -23,6 +23,7 @@ block content
           th= t('league.col.user')
           th.num= t('league.col.entries')
           th.num= t('league.col.points')
+          th.actions-col
       tbody
         each row in rows
           tr(class=[(row.rank <= 3 ? 'is-podium' : ''), (fantasyUser && row.user.id === fantasyUser.id ? 'is-me' : '')].filter(Boolean).join(' '))
@@ -39,6 +40,10 @@ block content
                 span.badge.badge--active.league-owner-tag= t('league.owner')
             td.num= row.entries
             td.num.leaderboard-points= row.points
+            td.actions-col
+              a.btn.btn--ghost.btn--sm(href=`/fantasy/leagues/${league.id}/members/${row.user.id}/plan`, aria-label=t('league.viewPlan'))
+                +icon('kit')
+                span.view-plan-label= ' ' + t('league.viewPlan')
 
   .league-actions
     if isOwner
