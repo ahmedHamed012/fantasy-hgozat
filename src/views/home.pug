@@ -2,9 +2,8 @@ extends layouts/base
 
 block content
   section.hero
-    h1.hero__title
-      +icon('ball', 'hero__logo')
-      span= ' ' + t('home.hero.title')
+    img.hero__crest(src="/static/imgs/logo.png", alt=t('app.name'), width="140", height="140")
+    h1.hero__title= t('home.hero.title')
     p.hero__subtitle= t('home.hero.subtitle')
     .hero__actions
       a.btn.btn--primary(href="/fantasy")= t('home.cta.play')

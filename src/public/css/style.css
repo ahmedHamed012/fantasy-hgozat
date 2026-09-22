@@ -121,7 +121,8 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 }
 .site-header__brand { display: flex; align-items: center; gap: 8px; font-weight: 700; }
 .site-header__logo { font-size: 1.4rem; }
-.site-header__title { letter-spacing: 0.2px; }
+.site-header__logo-img { height: 34px; width: 34px; object-fit: contain; display: block; }
+.site-header__title { letter-spacing: 0.2px; white-space: nowrap; }
 .site-nav { display: flex; gap: 4px; }
 .site-nav__link {
   padding: 8px 12px;
@@ -189,7 +190,8 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
 }
 
 /* ---- Hero (home) -------------------------------------------------------- */
-.hero { text-align: center; padding: 48px 0 32px; }
+.hero { text-align: center; padding: 40px 0 32px; }
+.hero__crest { width: 132px; height: 132px; object-fit: contain; margin: 0 auto 14px; display: block; }
 .hero__title { font-size: clamp(2rem, 6vw, 3.2rem); }
 .hero__subtitle {
   color: var(--text-muted);
@@ -666,6 +668,90 @@ main.container { flex: 1 0 auto; padding-top: 24px; padding-bottom: 48px; }
   border-radius: var(--radius-sm);
 }
 .unlocked-item__icon { font-size: 1.5rem; }
+
+/* ---- Account dropdown menu ---------------------------------------------- */
+.account-menu { position: relative; }
+.account-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  cursor: pointer;
+  color: var(--text);
+  font: inherit;
+  min-height: 40px;
+  transition: var(--transition);
+}
+.account-menu__trigger:hover { border-color: var(--text-faint); }
+.account-menu__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pitch-green-dark), var(--pitch-green-light));
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.account-menu__name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-menu__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-end: 0;
+  min-width: 190px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 6px;
+  display: none;
+  z-index: 30;
+}
+.account-menu.is-open .account-menu__panel { display: block; }
+.account-menu__header {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-menu__panel form { margin: 0; }
+.account-menu__item {
+  display: block;
+  width: 100%;
+  text-align: start;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.account-menu__item:hover { background: var(--surface-2); }
+
+/* On small screens the trigger collapses to just the avatar. */
+@media (max-width: 768px) {
+  .account-menu__name { display: none; }
+  .account-menu__trigger { padding: 4px; border-radius: 50%; }
+}
 
 /* ---- Bottom navigation (mobile) ----------------------------------------- */
 .bottom-nav { display: none; }

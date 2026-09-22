@@ -110,26 +110,85 @@ npm run build               # tsc -> dist (for `npm start`)
 npm start
 ```
 
-## Deployment (Vercel)
+## Deployment (Vercel + GitHub)
 
 The app runs as a single serverless function (`api/index.ts` exports the
 Express app; `vercel.json` rewrites all routes to it and bundles the Pug views
-and static assets via `includeFiles`).
+and static assets via `includeFiles`). Connecting the GitHub repo to Vercel
+gives you **automatic redeploys on every push** — the recommended workflow.
 
-1. Push the repo to GitHub and import it into Vercel.
-2. Set the environment variables (above) in **Project → Settings → Environment
-   Variables**. Use the Supabase pooled `DATABASE_URL` and direct `DIRECT_URL`.
-3. Deploy. The build step runs:
+### One-time setup
 
-   ```bash
-   npm run vercel-build     # prisma generate && prisma migrate deploy
-   ```
+**1. Push the project to GitHub**
 
-   `prisma migrate deploy` applies the committed migrations to the database —
-   the schema is created/updated from the migration history, never from manual
-   changes.
+```bash
+git init                 # if not already a repo
+git add -A
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/<you>/<repo>.git
+git push -u origin main
+```
 
-### Applying migrations manually
+**2. Import the repo into Vercel**
+
+- Go to <https://vercel.com/new>, sign in with GitHub, and pick the repository.
+- Framework preset: **Other** (Vercel reads `vercel.json`; no changes needed).
+- Leave Build/Output settings as detected — the build command comes from
+  `vercel.json` (`npm run vercel-build`).
+
+**3. Add the environment variables**
+
+In **Project → Settings → Environment Variables**, add (for Production, and
+Preview if you want branch deploys to work):
+
+| Variable         | Value                                                    |
+| ---------------- | -------------------------------------------------------- |
+| `DATABASE_URL`   | Supabase **pooled** string (port `6543`, `?pgbouncer=true`) |
+| `DIRECT_URL`     | Supabase **direct** string (port `5432`)                 |
+| `SESSION_SECRET` | a long random string                                     |
+| `CSRF_SECRET`    | a different long random string                           |
+| `ADMIN_EMAIL`    | your admin email                                         |
+| `ADMIN_PASSWORD` | your admin password                                      |
+| `NODE_ENV`       | `production`                                             |
+
+**4. Deploy.** Click **Deploy**. On each build Vercel runs
+`npm run vercel-build` → `prisma generate && prisma migrate deploy`, which
+applies the committed migrations to your Supabase database (schema comes from
+the migration history, never manual edits).
+
+**5. Create the admin + seed (first deploy only).** Migrations create the
+tables but not the admin user. From your machine (with the same `.env` pointing
+at the production DB), run **one** of:
+
+```bash
+npm run create-admin     # just the admin
+# or
+npm run db:seed          # admin + demo players/matches/fantasy data
+```
+
+### Updating and redeploying (the easy part)
+
+Once GitHub is connected, **you never deploy by hand again**:
+
+```bash
+git add -A
+git commit -m "Describe your change"
+git push
+```
+
+Every push to `main` triggers a fresh production deploy automatically; pushes to
+other branches / pull requests get their own **preview URL**. If you changed the
+Prisma schema, add a migration before pushing so it deploys with the code:
+
+```bash
+npx prisma migrate dev --name your_change   # creates prisma/migrations/*
+git add -A && git commit -m "..." && git push
+```
+
+The committed migration is applied automatically during the Vercel build.
+
+### Applying migrations manually (optional)
 
 ```bash
 npx prisma migrate deploy

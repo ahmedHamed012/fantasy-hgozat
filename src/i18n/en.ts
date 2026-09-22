@@ -7,7 +7,7 @@
  */
 export const en: Record<string, string> = {
   // App / chrome
-  'app.name': 'Weekly Football',
+  'app.name': 'Fantasy Hgozat',
   'lang.name': 'English',
   'lang.switchTo': 'العربية',
 
@@ -24,10 +24,10 @@ export const en: Record<string, string> = {
   'nav.standings': 'Standings',
 
   // Footer
-  'footer.text': 'Weekly Football · {year}',
+  'footer.text': 'Fantasy Hgozat · {year}',
 
   // Home
-  'home.hero.title': 'Weekly Football',
+  'home.hero.title': 'Fantasy Hgozat',
   'home.hero.subtitle':
     'Turn your weekly 5-a-side matches into a season-long competition. Track goals, assists, saves, points, rankings and badges — automatically.',
   'home.cta.leaderboard': 'View leaderboard',

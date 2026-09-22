@@ -1,22 +1,32 @@
 header.site-header
   .container.site-header__inner
     a.site-header__brand(href="/")
-      span.site-header__logo
-        +icon('ball')
+      img.site-header__logo-img(src="/static/imgs/logo.png", alt=t('app.name'), width="34", height="34")
       span.site-header__title= t('app.name')
     nav.site-nav
       a.site-nav__link.site-nav__primary(href="/leaderboard", class=(currentPath && currentPath.startsWith('/leaderboard') ? 'is-active' : ''))= t('nav.leaderboard')
       a.site-nav__link.site-nav__primary(href="/fantasy", class=(currentPath && currentPath.startsWith('/fantasy') ? 'is-active' : ''))= t('nav.fantasy')
       if fantasyUser
-        span.site-nav__user= fantasyUser.name
-        form.site-nav__logout(method="post", action="/logout")
-          input(type="hidden", name="_csrf", value=csrfToken)
-          button.site-nav__link.site-nav__logout-btn(type="submit")= t('nav.logout')
+        .account-menu
+          button.account-menu__trigger(type="button", data-dropdown-toggle, aria-haspopup="true", aria-expanded="false")
+            span.account-menu__avatar= (fantasyUser.name || '?').trim().charAt(0).toUpperCase()
+            span.account-menu__name= fantasyUser.name
+          .account-menu__panel(role="menu")
+            .account-menu__header= fantasyUser.name
+            form(method="post", action="/logout")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              button.account-menu__item(type="submit", role="menuitem")= t('nav.logout')
       else if currentUser
-        a.site-nav__link(href="/admin", class=(currentPath && currentPath.startsWith('/admin') ? 'is-active' : ''))= t('nav.admin')
-        form.site-nav__logout(method="post", action="/auth/logout")
-          input(type="hidden", name="_csrf", value=csrfToken)
-          button.site-nav__link.site-nav__logout-btn(type="submit")= t('nav.logout')
+        .account-menu
+          button.account-menu__trigger(type="button", data-dropdown-toggle, aria-haspopup="true", aria-expanded="false")
+            span.account-menu__avatar= (currentUser.email || 'A').trim().charAt(0).toUpperCase()
+            span.account-menu__name= t('nav.admin')
+          .account-menu__panel(role="menu")
+            .account-menu__header= currentUser.email
+            a.account-menu__item(href="/admin", role="menuitem")= t('nav.admin')
+            form(method="post", action="/auth/logout")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              button.account-menu__item(type="submit", role="menuitem")= t('nav.logout')
       else
         a.site-nav__link(href="/login", class=(currentPath === '/login' ? 'is-active' : ''))= t('nav.login')
         a.site-nav__link.site-nav__cta(href="/register")= t('nav.register')

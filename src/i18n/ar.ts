@@ -4,7 +4,7 @@
  */
 export const ar: Record<string, string> = {
   // App / chrome
-  'app.name': 'الدوري الأسبوعي',
+  'app.name': 'فانتازي الحجوزات',
   'lang.name': 'العربية',
   'lang.switchTo': 'English',
 
@@ -21,10 +21,10 @@ export const ar: Record<string, string> = {
   'nav.standings': 'الترتيب',
 
   // Footer
-  'footer.text': 'الدوري الأسبوعي · {year}',
+  'footer.text': 'فانتازي الحجوزات · {year}',
 
   // Home
-  'home.hero.title': 'الدوري الأسبوعي',
+  'home.hero.title': 'فانتازي الحجوزات',
   'home.hero.subtitle':
     'حوّل مباريات الخماسي الأسبوعية إلى منافسة تمتد طوال الموسم. سجّل الأهداف والتمريرات الحاسمة والتصديات والنقاط والترتيب والأوسمة — تلقائيًا.',
   'home.cta.leaderboard': 'عرض الترتيب',
